@@ -194,39 +194,12 @@ func (s *ChatService) SendMessage(
 			Msg("chat: charged free quota")
 	} else {
 		// ── Case 2: try subscription bundles (newest first) ──────────────────
-		subs, err := s.subQuotaRepo.FindActiveForUserOrderedByCreatedDesc(ctx, tx, requestingUserID)
-		if err != nil {
-			return nil, fmt.Errorf("chat service: find subscriptions: %w", err)
-		}
-
-		charged := false
-		for _, sub := range subs {
-			// Enterprise tier: unlimited — always charge (no capacity check)
-			if sub.Tier == "enterprise" || sub.MaxMessages == -1 {
-				if err = s.subQuotaRepo.DeductMessage(ctx, tx, sub.ID); err != nil {
-					return nil, fmt.Errorf("chat service: deduct message: %w", err)
-				}
-				id := sub.ID
-				chargedSubscriptionID = &id
-				charged = true
-				break
-			}
-			// Other tiers: check remaining capacity
-			if sub.MessagesUsed < sub.MaxMessages {
-				if err = s.subQuotaRepo.DeductMessage(ctx, tx, sub.ID); err != nil {
-					return nil, fmt.Errorf("chat service: deduct message: %w", err)
-				}
-				id := sub.ID
-				chargedSubscriptionID = &id
-				charged = true
-				break
-			}
-		}
-
-		if !charged {
-			err = apperrors.ErrNoActiveSubscription
+		subID, subErr := s.chargeFromSubscriptions(ctx, tx, requestingUserID)
+		if subErr != nil {
+			err = subErr
 			return nil, err
 		}
+		chargedSubscriptionID = subID
 	}
 
 	if err = tx.Commit(); err != nil {
@@ -257,6 +230,26 @@ func (s *ChatService) SendMessage(
 	}
 
 	return saved, nil
+}
+
+// chargeFromSubscriptions finds the first active subscription with remaining
+// capacity and deducts one message from it.  Returns the subscription ID or
+// ErrNoActiveSubscription if none qualify.
+func (s *ChatService) chargeFromSubscriptions(ctx context.Context, tx *sqlx.Tx, userID uuid.UUID) (*uuid.UUID, error) {
+	subs, err := s.subQuotaRepo.FindActiveForUserOrderedByCreatedDesc(ctx, tx, userID)
+	if err != nil {
+		return nil, fmt.Errorf("chat service: find subscriptions: %w", err)
+	}
+	for _, sub := range subs {
+		if sub.Tier == "enterprise" || sub.MaxMessages == -1 || sub.MessagesUsed < sub.MaxMessages {
+			if err = s.subQuotaRepo.DeductMessage(ctx, tx, sub.ID); err != nil {
+				return nil, fmt.Errorf("chat service: deduct message: %w", err)
+			}
+			id := sub.ID
+			return &id, nil
+		}
+	}
+	return nil, apperrors.ErrNoActiveSubscription
 }
 
 // GetMessage returns a single chat message, enforcing ownership via domain policy.

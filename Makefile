@@ -35,7 +35,7 @@ run:
 ## format: Format code, run vet, and lint
 format:
 	@echo ">> Formatting code..."
-	@gofmt -w .
+	@gofmt -s -w .
 	@echo ">> Running go vet..."
 	@go vet ./...
 	@echo ">> Running linter..."

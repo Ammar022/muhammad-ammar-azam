@@ -7,7 +7,7 @@ import (
 )
 
 type AppError struct {
-	HTTPStatus int `json:"-"`
+	HTTPStatus int    `json:"-"`
 	Code       string `json:"code"`
 	Message    string `json:"message"`
 	Internal   error  `json:"-"`
@@ -62,7 +62,6 @@ var (
 	// Generic server error
 	ErrInternal = New(http.StatusInternalServerError, "INTERNAL_ERROR", "An internal error occurred")
 )
-
 
 func IsAppError(err error) bool {
 	var ae *AppError

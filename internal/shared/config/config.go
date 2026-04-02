@@ -109,7 +109,7 @@ func Load() (*Config, error) {
 
 	v.SetConfigFile(".env")
 	v.SetConfigType("env")
-	_ = v.ReadInConfig() 
+	_ = v.ReadInConfig()
 
 	v.AutomaticEnv()
 	v.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
