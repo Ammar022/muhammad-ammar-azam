@@ -1,0 +1,840 @@
+basePath: /
+definitions:
+  github_com_Ammar022_secure-ai-chat-backend_internal_chat_dto.SendMessageRequest:
+    properties:
+      question:
+        description: |-
+          Question is the user's prompt.  Required, 1–4000 characters.
+          The validator rejects blank strings and anything exceeding the limit.
+        example: What is quantum computing and how does it work?
+        maxLength: 4000
+        minLength: 1
+        type: string
+    required:
+    - question
+    type: object
+  github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.Envelope:
+    properties:
+      data: {}
+      error:
+        $ref: '#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.ErrorBody'
+      meta: {}
+      success:
+        type: boolean
+    type: object
+  github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.ErrorBody:
+    properties:
+      code:
+        type: string
+      details:
+        description: optional field-level errors
+      message:
+        type: string
+    type: object
+  github_com_Ammar022_secure-ai-chat-backend_internal_subscription_dto.CreateSubscriptionRequest:
+    properties:
+      auto_renew:
+        description: AutoRenew controls whether the subscription automatically renews
+          at the end of the billing cycle.
+        example: true
+        type: boolean
+      billing_cycle:
+        description: |-
+          BillingCycle must be one of: "monthly", "yearly"
+          Yearly billing applies a 20% discount on the monthly price.
+        enum:
+        - monthly
+        - yearly
+        example: monthly
+        type: string
+      tier:
+        description: |-
+          Tier must be one of: "basic", "pro", "enterprise"
+          basic = 10 msgs | pro = 100 msgs | enterprise = unlimited
+        enum:
+        - basic
+        - pro
+        - enterprise
+        example: pro
+        type: string
+    required:
+    - billing_cycle
+    - tier
+    type: object
+  github_com_Ammar022_secure-ai-chat-backend_internal_subscription_dto.ToggleAutoRenewRequest:
+    properties:
+      enable:
+        description: Enable sets auto_renew to true or false.
+        example: true
+        type: boolean
+    type: object
+  internal_admin_controller.metricsResponse:
+    properties:
+      active_subscriptions:
+        type: integer
+      free_quota_usage_this_month:
+        type: integer
+      generated_at:
+        type: string
+      messages_today:
+        type: integer
+      subscriptions_by_tier:
+        additionalProperties:
+          format: int64
+          type: integer
+        type: object
+      total_messages:
+        type: integer
+      total_subscriptions:
+        type: integer
+      total_users:
+        type: integer
+    type: object
+  internal_admin_controller.subUsageSummary:
+    properties:
+      id:
+        type: string
+      is_active:
+        type: boolean
+      max_messages:
+        type: integer
+      messages_used:
+        type: integer
+      tier:
+        type: string
+    type: object
+  internal_admin_controller.userUsageResponse:
+    properties:
+      free_messages_used:
+        type: integer
+      subscriptions:
+        items:
+          $ref: '#/definitions/internal_admin_controller.subUsageSummary'
+        type: array
+      total_messages:
+        type: integer
+      user_id:
+        type: string
+    type: object
+  internal_auth_controller.setRoleRequest:
+    properties:
+      role:
+        description: Role must be "user" or "admin".
+        enum:
+        - user
+        - admin
+        example: admin
+        type: string
+    type: object
+  internal_chat_controller.messageResponse:
+    properties:
+      answer:
+        example: This is a simulated AI response to your question.
+        type: string
+      completion_tokens:
+        example: 85
+        type: integer
+      created_at:
+        example: "2024-03-21T10:30:00Z"
+        type: string
+      id:
+        example: 550e8400-e29b-41d4-a716-446655440000
+        type: string
+      prompt_tokens:
+        example: 12
+        type: integer
+      question:
+        example: What is quantum computing and how does it work?
+        type: string
+      response_time_ms:
+        example: 743
+        type: integer
+      subscription_id:
+        example: a1b2c3d4-e5f6-7890-abcd-ef1234567890
+        type: string
+      total_tokens:
+        example: 97
+        type: integer
+    type: object
+  internal_subscription_controller.subscriptionResponse:
+    properties:
+      auto_renew:
+        example: true
+        type: boolean
+      billing_cycle:
+        enum:
+        - monthly
+        - yearly
+        example: monthly
+        type: string
+      cancelled_at:
+        example: "2024-03-15T08:00:00Z"
+        type: string
+      created_at:
+        example: "2024-03-01T00:00:00Z"
+        type: string
+      end_date:
+        example: "2024-04-01T00:00:00Z"
+        type: string
+      id:
+        example: a1b2c3d4-e5f6-7890-abcd-ef1234567890
+        type: string
+      is_active:
+        example: true
+        type: boolean
+      max_messages:
+        example: 100
+        type: integer
+      messages_used:
+        example: 23
+        type: integer
+      price:
+        example: 49.99
+        type: number
+      remaining_messages:
+        example: 77
+        type: integer
+      renewal_date:
+        example: "2024-04-01T00:00:00Z"
+        type: string
+      start_date:
+        example: "2024-03-01T00:00:00Z"
+        type: string
+      tier:
+        enum:
+        - basic
+        - pro
+        - enterprise
+        example: pro
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: Production-grade AI chat backend with Auth0 authentication, DDD, quota
+    management, and subscription bundles.
+  title: Secure AI Chat Backend
+  version: "1.0"
+paths:
+  /api/v1/admin/metrics:
+    get:
+      description: Returns aggregated usage and subscription metrics. Admin role required.
+      parameters:
+      - description: Unix timestamp
+        in: header
+        name: X-Request-Timestamp
+        required: true
+        type: string
+      - description: Unique nonce
+        in: header
+        name: X-Nonce
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: System metrics
+          schema:
+            allOf:
+            - $ref: '#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.Envelope'
+            - properties:
+                data:
+                  $ref: '#/definitions/internal_admin_controller.metricsResponse'
+              type: object
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.Envelope'
+        "403":
+          description: Forbidden — admin role required
+          schema:
+            $ref: '#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.Envelope'
+      security:
+      - BearerAuth: []
+      summary: Get system metrics
+      tags:
+      - admin
+  /api/v1/admin/users:
+    get:
+      description: Returns all registered users ordered by creation date. Admin role
+        required.
+      parameters:
+      - description: Unix timestamp
+        in: header
+        name: X-Request-Timestamp
+        required: true
+        type: string
+      - description: Unique nonce
+        in: header
+        name: X-Nonce
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of users
+          schema:
+            $ref: '#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.Envelope'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.Envelope'
+        "403":
+          description: Forbidden — admin role required
+          schema:
+            $ref: '#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.Envelope'
+      security:
+      - BearerAuth: []
+      summary: List all users
+      tags:
+      - admin
+  /api/v1/admin/users/{id}/role:
+    patch:
+      consumes:
+      - application/json
+      description: Promotes or demotes a user to/from admin. Role must be "user" or
+        "admin". Admin role required.
+      parameters:
+      - description: Unix timestamp (seconds since epoch, e.g. 1711234567)
+        in: header
+        name: X-Request-Timestamp
+        required: true
+        type: string
+      - description: Unique string per request (e.g. uuid or random hex)
+        in: header
+        name: X-Nonce
+        required: true
+        type: string
+      - description: Target user UUID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Role assignment payload
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/internal_auth_controller.setRoleRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Updated user
+          schema:
+            $ref: '#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.Envelope'
+        "400":
+          description: Invalid role or user ID
+          schema:
+            $ref: '#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.Envelope'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.Envelope'
+        "403":
+          description: Forbidden — admin role required
+          schema:
+            $ref: '#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.Envelope'
+        "404":
+          description: User not found
+          schema:
+            $ref: '#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.Envelope'
+      security:
+      - BearerAuth: []
+      summary: Set user role
+      tags:
+      - admin
+  /api/v1/admin/users/{id}/usage:
+    get:
+      description: 'Returns detailed usage stats for a specific user: free quota used
+        this month, total messages, and all subscription bundles. Admin role required.'
+      parameters:
+      - description: Unix timestamp
+        in: header
+        name: X-Request-Timestamp
+        required: true
+        type: string
+      - description: Unique nonce
+        in: header
+        name: X-Nonce
+        required: true
+        type: string
+      - description: User UUID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: User usage details
+          schema:
+            allOf:
+            - $ref: '#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.Envelope'
+            - properties:
+                data:
+                  $ref: '#/definitions/internal_admin_controller.userUsageResponse'
+              type: object
+        "400":
+          description: Invalid user ID
+          schema:
+            $ref: '#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.Envelope'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.Envelope'
+        "403":
+          description: Forbidden — admin role required
+          schema:
+            $ref: '#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.Envelope'
+      security:
+      - BearerAuth: []
+      summary: Get user usage
+      tags:
+      - admin
+  /api/v1/chat/messages:
+    get:
+      description: Returns a paginated list of the authenticated user's chat history,
+        newest first.
+      parameters:
+      - description: Unix timestamp in seconds (e.g. 1711234567)
+        in: header
+        name: X-Request-Timestamp
+        required: true
+        type: string
+      - description: Unique string per request, e.g. a UUID
+        in: header
+        name: X-Nonce
+        required: true
+        type: string
+      - description: 'Page number (default: 1)'
+        in: query
+        name: page
+        type: integer
+      - description: 'Items per page, 1–100 (default: 20)'
+        in: query
+        name: per_page
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Paginated messages
+          schema:
+            allOf:
+            - $ref: '#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.Envelope'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/internal_chat_controller.messageResponse'
+                  type: array
+              type: object
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.Envelope'
+      security:
+      - BearerAuth: []
+      summary: List chat messages
+      tags:
+      - chat
+    post:
+      consumes:
+      - application/json
+      description: Submits a question, validates quota (free tier or subscription
+        bundle), calls the mocked AI, stores and returns the result. Deducts from
+        the subscription bundle with the most recent remaining quota.
+      parameters:
+      - description: Unix timestamp in seconds (e.g. 1711234567) — must be within
+          ±5 min of server time
+        in: header
+        name: X-Request-Timestamp
+        required: true
+        type: string
+      - description: Unique string per request, e.g. a UUID (rejected if reused —
+          anti-replay)
+        in: header
+        name: X-Nonce
+        required: true
+        type: string
+      - description: Question payload
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_chat_dto.SendMessageRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Message stored and AI response returned
+          schema:
+            allOf:
+            - $ref: '#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.Envelope'
+            - properties:
+                data:
+                  $ref: '#/definitions/internal_chat_controller.messageResponse'
+              type: object
+        "400":
+          description: Invalid input
+          schema:
+            $ref: '#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.Envelope'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.Envelope'
+        "402":
+          description: No quota available — subscribe to continue
+          schema:
+            $ref: '#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.Envelope'
+        "422":
+          description: Validation error
+          schema:
+            $ref: '#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.Envelope'
+        "429":
+          description: Rate limited
+          schema:
+            $ref: '#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.Envelope'
+      security:
+      - BearerAuth: []
+      summary: Send a message to the AI
+      tags:
+      - chat
+  /api/v1/chat/messages/{id}:
+    get:
+      description: Returns one chat message by ID. Users can only retrieve their own
+        messages.
+      parameters:
+      - description: Unix timestamp in seconds (e.g. 1711234567)
+        in: header
+        name: X-Request-Timestamp
+        required: true
+        type: string
+      - description: Unique string per request, e.g. a UUID
+        in: header
+        name: X-Nonce
+        required: true
+        type: string
+      - description: Message UUID (e.g. 550e8400-e29b-41d4-a716-446655440000)
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Chat message
+          schema:
+            allOf:
+            - $ref: '#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.Envelope'
+            - properties:
+                data:
+                  $ref: '#/definitions/internal_chat_controller.messageResponse'
+              type: object
+        "400":
+          description: Invalid UUID
+          schema:
+            $ref: '#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.Envelope'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.Envelope'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.Envelope'
+        "404":
+          description: Not found
+          schema:
+            $ref: '#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.Envelope'
+      security:
+      - BearerAuth: []
+      summary: Get a single chat message
+      tags:
+      - chat
+  /api/v1/subscriptions:
+    get:
+      description: Returns all subscription bundles (active and inactive) for the
+        authenticated user.
+      parameters:
+      - description: Unix timestamp in seconds (e.g. 1711234567)
+        in: header
+        name: X-Request-Timestamp
+        required: true
+        type: string
+      - description: Unique string per request, e.g. a UUID
+        in: header
+        name: X-Nonce
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of subscriptions
+          schema:
+            allOf:
+            - $ref: '#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.Envelope'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/internal_subscription_controller.subscriptionResponse'
+                  type: array
+              type: object
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.Envelope'
+      security:
+      - BearerAuth: []
+      summary: List subscriptions
+      tags:
+      - subscriptions
+    post:
+      consumes:
+      - application/json
+      description: Creates a new active subscription for the user. Users may hold
+        multiple active bundles simultaneously. Quota is deducted from the newest
+        bundle that still has capacity.
+      parameters:
+      - description: Unix timestamp in seconds (e.g. 1711234567)
+        in: header
+        name: X-Request-Timestamp
+        required: true
+        type: string
+      - description: Unique string per request, e.g. a UUID
+        in: header
+        name: X-Nonce
+        required: true
+        type: string
+      - description: Subscription details
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_subscription_dto.CreateSubscriptionRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Subscription created
+          schema:
+            allOf:
+            - $ref: '#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.Envelope'
+            - properties:
+                data:
+                  $ref: '#/definitions/internal_subscription_controller.subscriptionResponse'
+              type: object
+        "400":
+          description: Invalid input
+          schema:
+            $ref: '#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.Envelope'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.Envelope'
+        "422":
+          description: Validation error — see details for field messages
+          schema:
+            $ref: '#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.Envelope'
+      security:
+      - BearerAuth: []
+      summary: Create a subscription bundle
+      tags:
+      - subscriptions
+  /api/v1/subscriptions/{id}:
+    get:
+      description: Returns a single subscription bundle by ID. Users can only access
+        their own subscriptions.
+      parameters:
+      - description: Unix timestamp in seconds (e.g. 1711234567)
+        in: header
+        name: X-Request-Timestamp
+        required: true
+        type: string
+      - description: Unique string per request, e.g. a UUID
+        in: header
+        name: X-Nonce
+        required: true
+        type: string
+      - description: Subscription UUID (e.g. a1b2c3d4-e5f6-7890-abcd-ef1234567890)
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Subscription
+          schema:
+            allOf:
+            - $ref: '#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.Envelope'
+            - properties:
+                data:
+                  $ref: '#/definitions/internal_subscription_controller.subscriptionResponse'
+              type: object
+        "400":
+          description: Invalid UUID
+          schema:
+            $ref: '#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.Envelope'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.Envelope'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.Envelope'
+        "404":
+          description: Not found
+          schema:
+            $ref: '#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.Envelope'
+      security:
+      - BearerAuth: []
+      summary: Get a subscription
+      tags:
+      - subscriptions
+  /api/v1/subscriptions/{id}/auto-renew:
+    patch:
+      consumes:
+      - application/json
+      description: Enables or disables automatic renewal for a subscription. Cannot
+        be re-enabled on a cancelled subscription.
+      parameters:
+      - description: Unix timestamp in seconds (e.g. 1711234567)
+        in: header
+        name: X-Request-Timestamp
+        required: true
+        type: string
+      - description: Unique string per request, e.g. a UUID
+        in: header
+        name: X-Nonce
+        required: true
+        type: string
+      - description: Subscription UUID (e.g. a1b2c3d4-e5f6-7890-abcd-ef1234567890)
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Set enable to true to turn on auto-renew, false to turn it off
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_subscription_dto.ToggleAutoRenewRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Updated subscription
+          schema:
+            allOf:
+            - $ref: '#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.Envelope'
+            - properties:
+                data:
+                  $ref: '#/definitions/internal_subscription_controller.subscriptionResponse'
+              type: object
+        "400":
+          description: Invalid input or subscription is cancelled
+          schema:
+            $ref: '#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.Envelope'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.Envelope'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.Envelope'
+      security:
+      - BearerAuth: []
+      summary: Toggle auto-renew
+      tags:
+      - subscriptions
+  /api/v1/subscriptions/{id}/cancel:
+    patch:
+      description: Marks the subscription as cancelled. Access is preserved until
+        the end of the billing cycle. Auto-renew is disabled. Historical usage data
+        is preserved.
+      parameters:
+      - description: Unix timestamp in seconds (e.g. 1711234567)
+        in: header
+        name: X-Request-Timestamp
+        required: true
+        type: string
+      - description: Unique string per request, e.g. a UUID
+        in: header
+        name: X-Nonce
+        required: true
+        type: string
+      - description: Subscription UUID (e.g. a1b2c3d4-e5f6-7890-abcd-ef1234567890)
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Cancelled subscription
+          schema:
+            allOf:
+            - $ref: '#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.Envelope'
+            - properties:
+                data:
+                  $ref: '#/definitions/internal_subscription_controller.subscriptionResponse'
+              type: object
+        "400":
+          description: Already cancelled or invalid ID
+          schema:
+            $ref: '#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.Envelope'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.Envelope'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.Envelope'
+        "404":
+          description: Not found
+          schema:
+            $ref: '#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.Envelope'
+      security:
+      - BearerAuth: []
+      summary: Cancel a subscription
+      tags:
+      - subscriptions
+  /health:
+    get:
+      description: Returns 200 OK with subsystem status when healthy, 503 when degraded.
+        Used by load balancers and monitoring systems. No authentication required.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: All systems healthy
+          schema:
+            additionalProperties: true
+            type: object
+        "503":
+          description: One or more subsystems degraded
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Health check
+      tags:
+      - health
+securityDefinitions:
+  BearerAuth:
+    description: Auth0 JWT — prefix with "Bearer ". Obtain via Auth0 dashboard (APIs
+      → Test tab) or your Auth0 login flow.
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

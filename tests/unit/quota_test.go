@@ -1,0 +1,46 @@
+package unit
+
+import (
+	"testing"
+	"time"
+
+	"github.com/stretchr/testify/assert"
+
+	chatdomain "github.com/Ammar022/secure-ai-chat-backend/internal/chat/domain"
+)
+
+// TestFreeMessagesPerMonth verifies the constant is correct.
+func TestFreeMessagesPerMonth(t *testing.T) {
+	assert.Equal(t, 3, chatdomain.FreeMessagesPerMonth)
+}
+
+// TestCurrentMonth verifies the format is YYYY-MM.
+func TestCurrentMonth(t *testing.T) {
+	month := chatdomain.CurrentMonth()
+	// Should be exactly 7 characters: "2025-04"
+	assert.Len(t, month, 7)
+	assert.Equal(t, string(month[4]), "-")
+
+	// Should match the current UTC month
+	expected := time.Now().UTC().Format("2006-01")
+	assert.Equal(t, expected, month)
+}
+
+// TestQuotaUsage_FreeQuotaNotExhausted checks the < 3 boundary.
+func TestQuotaUsage_FreeQuotaNotExhausted(t *testing.T) {
+	cases := []struct {
+		used      int
+		exhausted bool
+	}{
+		{0, false},
+		{1, false},
+		{2, false},
+		{3, true}, // exactly at limit → exhausted
+		{4, true}, // over limit → exhausted
+	}
+	for _, tc := range cases {
+		isExhausted := tc.used >= chatdomain.FreeMessagesPerMonth
+		assert.Equal(t, tc.exhausted, isExhausted,
+			"used=%d: expected exhausted=%v", tc.used, tc.exhausted)
+	}
+}
