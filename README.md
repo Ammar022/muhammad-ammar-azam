@@ -1,5 +1,7 @@
 # Secure AI Chat Backend
 
+[![Go Report Card](https://goreportcard.com/badge/github.com/Ammar022/secure-ai-chat-backend)](https://goreportcard.com/report/github.com/Ammar022/secure-ai-chat-backend)
+
 A production-grade, secure REST API built with **Go**, implementing an **AI Chat Module** and a **Subscription Bundle Module**. The architecture follows **Domain-Driven Design (DDD)** and **Clean Architecture** principles.
 
 **Authentication**: Auth0 (OIDC/OAuth2) — RS256 JWT validation via JWKS.
@@ -127,7 +129,7 @@ secure-ai-chat-backend/
 ### 1. Clone and configure
 
 ```bash
-git clone https://github.com/ammar/secure-ai-chat-backend
+git clone https://github.com/Ammar022/secure-ai-chat-backend
 cd secure-ai-chat-backend
 cp .env.example .env
 # Edit .env — set AUTH0_DOMAIN, AUTH0_AUDIENCE, AUTH0_ROLES_CLAIM
