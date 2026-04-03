@@ -138,11 +138,11 @@ func TestRateLimitAuthEndpoint_StricterLimit(t *testing.T) {
 	r := chi.NewRouter()
 	r.Route("/auth", func(r chi.Router) {
 		r.Use(middleware.RateLimitByIP(authRPM))
-		r.Get("/google/login", okHandler)
+		r.Get("/login", okHandler)
 	})
 
 	for i := 0; i < authRPM; i++ {
-		req := httptest.NewRequest(http.MethodGet, "/auth/google/login", nil)
+		req := httptest.NewRequest(http.MethodGet, "/auth/login", nil)
 		req.RemoteAddr = fmt.Sprintf("192.168.1.1:%d", 2000+i)
 		rec := httptest.NewRecorder()
 		r.ServeHTTP(rec, req)
@@ -150,7 +150,7 @@ func TestRateLimitAuthEndpoint_StricterLimit(t *testing.T) {
 	}
 
 	// Exceeds auth limit
-	req := httptest.NewRequest(http.MethodGet, "/auth/google/login", nil)
+	req := httptest.NewRequest(http.MethodGet, "/auth/login", nil)
 	req.RemoteAddr = "192.168.1.1:9999"
 	rec := httptest.NewRecorder()
 	r.ServeHTTP(rec, req)

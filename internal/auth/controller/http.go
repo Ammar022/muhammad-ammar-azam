@@ -20,9 +20,8 @@ type AdminController struct {
 	userRepo userrepo.UserRepository
 }
 
-// NewGoogleAdminController creates the AdminController.
-// The name is kept for backward-compat with existing main.go wiring.
-func NewGoogleAdminController(userRepo userrepo.UserRepository) *AdminController {
+// NewAdminController creates the AdminController.
+func NewAdminController(userRepo userrepo.UserRepository) *AdminController {
 	return &AdminController{userRepo: userRepo}
 }
 

@@ -67,6 +67,7 @@ func (r *postgresUserRepository) Upsert(ctx context.Context, user *domain.User) 
 		 VALUES ($1, $2, $3, $4, NOW(), NOW())
 		 ON CONFLICT (external_id) DO UPDATE
 		   SET email      = EXCLUDED.email,
+		       role       = EXCLUDED.role,
 		       updated_at = NOW()
 		 RETURNING id, external_id, email, role, created_at, updated_at`,
 		user.ID, user.ExternalID, user.Email, user.Role,

@@ -47,3 +47,7 @@ logs/
 
 # Air live reload
 tmp/
+
+# Manual test curls (may contain real tokens)
+test_curls.sh
+curls.md

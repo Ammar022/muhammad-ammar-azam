@@ -136,7 +136,7 @@ func (v *Validator) extractClaims(token jwt.Token) (*Claims, error) {
 		if roleSlice, ok := rawRoles.([]interface{}); ok {
 			for _, r := range roleSlice {
 				if roleStr, ok := r.(string); ok {
-					roles = append(roles, Role(roleStr))
+					roles = append(roles, Role(strings.ToLower(roleStr)))
 				}
 			}
 		}

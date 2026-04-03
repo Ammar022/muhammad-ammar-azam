@@ -97,7 +97,7 @@ func main() {
 	subController := subctrl.NewSubscriptionController(subService)
 	adminController := adminctrl.NewAdminController(db.DB)
 	healthController := adminctrl.NewHealthController(db.DB, cfg.App.Version)
-	userRoleController := authctrl.NewGoogleAdminController(userRepo)
+	userRoleController := authctrl.NewAdminController(userRepo)
 
 	nonceCache := middleware.NewNonceCache(time.Duration(cfg.Security.AntiReplayWindowSec*2) * time.Second)
 
