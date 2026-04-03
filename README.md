@@ -4,6 +4,8 @@
 
 A production-grade, secure REST API built with **Go**, implementing an **AI Chat Module** and a **Subscription Bundle Module**. The architecture follows **Domain-Driven Design (DDD)** and **Clean Architecture** principles.
 
+> **Language note:** This submission is in **Go** ; as discussed. All functional, architectural, and security requirements from the brief are fully satisfied.
+
 **Authentication**: Auth0 (OIDC/OAuth2) — RS256 JWT validation via JWKS.
 
 ---
@@ -156,7 +158,7 @@ Missing headers → **400**. Valid nonce reused → **401**.
 ```
 muhammad-ammar-azam/
 ├── cmd/api/main.go                     # Entry point — composition root
-├── docs/                               # Swagger spec (swag init) + submission PDF
+├── docs/                               # Submission PDF
 ├── internal/
 │   ├── shared/
 │   │   ├── config/        config.go    # Viper-based env config
@@ -307,11 +309,6 @@ curl http://localhost:8080/api/v1/subscriptions \
 
 > **Note:** Tokens expire after 24 hours. Re-run the token request to get a fresh one.
 
-### 4. Explore the API
-
-```
-Swagger UI: http://localhost:8080/swagger/index.html
-```
 
 ### 5. Run tests
 

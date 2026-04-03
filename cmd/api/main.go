@@ -22,9 +22,6 @@ import (
 	chimiddleware "github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/cors"
 	"github.com/rs/zerolog/log"
-	httpSwagger "github.com/swaggo/http-swagger/v2"
-
-	_ "github.com/Ammar022/muhammad-ammar-azam/docs"
 
 	adminctrl "github.com/Ammar022/muhammad-ammar-azam/internal/admin/controller"
 	authctrl "github.com/Ammar022/muhammad-ammar-azam/internal/auth/controller"
@@ -123,17 +120,8 @@ func main() {
 	// Global IP-based rate limiting (outermost defence)
 	r.Use(middleware.RateLimitByIP(cfg.RateLimit.IPRPM))
 
-	r.Get("/health", healthController.Health)
-
-	r.With(func(next http.Handler) http.Handler {
-		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			w.Header().Set("Content-Security-Policy",
-				"default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'")
-			next.ServeHTTP(w, r)
-		})
-	}).Get("/swagger/*", httpSwagger.Handler(
-		httpSwagger.URL("/swagger/doc.json"),
-	))
+	// /health is protected by JWT — no endpoint is open
+	r.With(jwtValidator.Middleware).Get("/health", healthController.Health)
 
 	r.Route("/api/v1", func(r chi.Router) {
 		r.Use(middleware.RequireJSON)
