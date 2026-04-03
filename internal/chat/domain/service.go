@@ -13,30 +13,17 @@ import (
 	apperrors "github.com/Ammar022/secure-ai-chat-backend/internal/shared/errors"
 )
 
-// ── Repository interfaces ─────────────────────────────────────────────────────
-// Defined here (owned by the domain) so the domain layer has zero dependency
-// on any infrastructure package.  The repository layer implements these.
-
-// ChatRepository persists and retrieves chat messages.
 type ChatRepository interface {
 	Create(ctx context.Context, msg *ChatMessage) (*ChatMessage, error)
 	FindByID(ctx context.Context, id uuid.UUID) (*ChatMessage, error)
 	ListByUserID(ctx context.Context, userID uuid.UUID, limit, offset int) ([]*ChatMessage, int64, error)
 }
 
-// QuotaRepository manages monthly quota usage records.
 type QuotaRepository interface {
-	// GetOrCreateForMonth fetches the quota record for the user/month, creating
-	// it (with 0 used) if it does not yet exist.  Must be called inside a
-	// transaction to be safe under concurrent requests.
 	GetOrCreateForMonth(ctx context.Context, tx *sqlx.Tx, userID uuid.UUID, month string) (*QuotaUsage, error)
-	// IncrementFreeUsage atomically increments free_messages_used within a tx.
 	IncrementFreeUsage(ctx context.Context, tx *sqlx.Tx, id uuid.UUID) error
 }
 
-// SubscriptionForQuota is a minimal projection of a subscription used by the
-// quota engine.  It avoids a circular import between the chat and subscription
-// packages while still expressing the data the quota engine needs.
 type SubscriptionForQuota struct {
 	ID           uuid.UUID
 	Tier         string // "basic" | "pro" | "enterprise"
@@ -45,20 +32,11 @@ type SubscriptionForQuota struct {
 	IsActive     bool
 }
 
-// SubscriptionQuotaRepository is the quota-side contract that the subscription
-// package must satisfy (implemented in subscription/repository).
 type SubscriptionQuotaRepository interface {
-	// FindActiveForUserOrderedByCreatedDesc returns active subscriptions for the
-	// user with remaining capacity, newest first.
 	FindActiveForUserOrderedByCreatedDesc(ctx context.Context, tx *sqlx.Tx, userID uuid.UUID) ([]*SubscriptionForQuota, error)
-	// DeductMessage atomically increments messages_used for a subscription
-	// within a transaction.
 	DeductMessage(ctx context.Context, tx *sqlx.Tx, subscriptionID uuid.UUID) error
 }
 
-// ── AI response simulation ────────────────────────────────────────────────────
-
-// MockAIResponse is the structured result of the simulated OpenAI API call.
 type MockAIResponse struct {
 	Answer           string
 	PromptTokens     int
@@ -67,8 +45,6 @@ type MockAIResponse struct {
 	LatencyMs        int64
 }
 
-// simulateOpenAI generates a deterministic-looking mocked OpenAI response with
-// a configurable random latency to simulate real API round-trip times.
 func simulateOpenAI(question string, minLatencyMs, maxLatencyMs int) MockAIResponse {
 	start := time.Now()
 
@@ -103,16 +79,6 @@ func max(a, b int) int {
 	return b
 }
 
-// ── ChatService ───────────────────────────────────────────────────────────────
-
-// ChatService orchestrates the full message-send workflow:
-//  1. Determine quota source (free tier vs. subscription)
-//  2. Atomically deduct quota in a transaction
-//  3. Call the mocked AI
-//  4. Persist the chat message
-//
-// It depends on repository interfaces, not concrete types, so it is fully
-// testable without a real database.
 type ChatService struct {
 	db           *sqlx.DB
 	chatRepo     ChatRepository
@@ -123,7 +89,6 @@ type ChatService struct {
 	maxLatencyMs int
 }
 
-// NewChatService creates a ChatService with all required dependencies.
 func NewChatService(
 	db *sqlx.DB,
 	chatRepo ChatRepository,
@@ -142,11 +107,6 @@ func NewChatService(
 	}
 }
 
-// SendMessage is the primary use-case method.  It:
-//  1. Enforces domain policy (ownership check).
-//  2. Deducts quota atomically (serializable transaction with SELECT FOR UPDATE).
-//  3. Calls the mocked OpenAI service.
-//  4. Persists the resulting ChatMessage.
 func (s *ChatService) SendMessage(
 	ctx context.Context,
 	requestingUserID uuid.UUID,
@@ -154,17 +114,10 @@ func (s *ChatService) SendMessage(
 	ipAddress string,
 	requestID string,
 ) (*ChatMessage, error) {
-	// ── Domain policy check ──────────────────────────────────────────────────
-	// (In a single-user context the requesting user IS the resource owner, but
-	//  this check becomes meaningful if an admin acts on behalf of a user.)
 	if err := s.policy.CanSendMessage(requestingUserID, requestingUserID); err != nil {
 		return nil, err
 	}
 
-	// ── Atomic quota deduction (transaction) ─────────────────────────────────
-	// We use READ COMMITTED with explicit locking (SELECT … FOR UPDATE) to
-	// prevent two concurrent requests from both seeing 0 usage and both
-	// succeeding against a free slot that only one of them should get.
 	var chargedSubscriptionID *uuid.UUID
 
 	tx, err := s.db.BeginTxx(ctx, nil)
@@ -184,7 +137,6 @@ func (s *ChatService) SendMessage(
 	}
 
 	if quota.FreeMessagesUsed < FreeMessagesPerMonth {
-		// ── Case 1: free quota available ────────────────────────────────────
 		if err = s.quotaRepo.IncrementFreeUsage(ctx, tx, quota.ID); err != nil {
 			return nil, fmt.Errorf("chat service: increment free usage: %w", err)
 		}
@@ -193,7 +145,6 @@ func (s *ChatService) SendMessage(
 			Int("free_used", quota.FreeMessagesUsed+1).
 			Msg("chat: charged free quota")
 	} else {
-		// ── Case 2: try subscription bundles (newest first) ──────────────────
 		subID, subErr := s.chargeFromSubscriptions(ctx, tx, requestingUserID)
 		if subErr != nil {
 			err = subErr
@@ -206,10 +157,8 @@ func (s *ChatService) SendMessage(
 		return nil, fmt.Errorf("chat service: commit transaction: %w", err)
 	}
 
-	// ── Call the mocked AI (after quota committed) ────────────────────────────
 	aiResp := simulateOpenAI(question, s.minLatencyMs, s.maxLatencyMs)
 
-	// ── Persist the chat message ──────────────────────────────────────────────
 	msg := &ChatMessage{
 		ID:               uuid.New(),
 		UserID:           requestingUserID,
@@ -232,9 +181,6 @@ func (s *ChatService) SendMessage(
 	return saved, nil
 }
 
-// chargeFromSubscriptions finds the first active subscription with remaining
-// capacity and deducts one message from it.  Returns the subscription ID or
-// ErrNoActiveSubscription if none qualify.
 func (s *ChatService) chargeFromSubscriptions(ctx context.Context, tx *sqlx.Tx, userID uuid.UUID) (*uuid.UUID, error) {
 	subs, err := s.subQuotaRepo.FindActiveForUserOrderedByCreatedDesc(ctx, tx, userID)
 	if err != nil {
@@ -252,7 +198,7 @@ func (s *ChatService) chargeFromSubscriptions(ctx context.Context, tx *sqlx.Tx, 
 	return nil, apperrors.ErrNoActiveSubscription
 }
 
-// GetMessage returns a single chat message, enforcing ownership via domain policy.
+// GetMessage returns a single chat message, enforcing ownership via domain policy
 func (s *ChatService) GetMessage(ctx context.Context, requestingUserID, messageID uuid.UUID) (*ChatMessage, error) {
 	msg, err := s.chatRepo.FindByID(ctx, messageID)
 	if err != nil {
@@ -267,7 +213,7 @@ func (s *ChatService) GetMessage(ctx context.Context, requestingUserID, messageI
 	return msg, nil
 }
 
-// ListMessages returns the authenticated user's chat history with pagination.
+// ListMessages returns the authenticated user's chat history with pagination
 func (s *ChatService) ListMessages(ctx context.Context, userID uuid.UUID, page, perPage int) ([]*ChatMessage, int64, error) {
 	if page < 1 {
 		page = 1

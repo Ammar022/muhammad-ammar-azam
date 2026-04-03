@@ -18,12 +18,10 @@ type postgresUserRepository struct {
 	db *sqlx.DB
 }
 
-// NewPostgresUserRepository creates a new PostgreSQL-backed user repository.
 func NewPostgresUserRepository(db *sqlx.DB) UserRepository {
 	return &postgresUserRepository{db: db}
 }
 
-// FindByExternalID retrieves a user by their Auth0 subject claim.
 func (r *postgresUserRepository) FindByExternalID(ctx context.Context, externalID string) (*domain.User, error) {
 	var user domain.User
 	err := r.db.GetContext(ctx, &user,
@@ -41,7 +39,6 @@ func (r *postgresUserRepository) FindByExternalID(ctx context.Context, externalI
 	return &user, nil
 }
 
-// FindByID retrieves a user by internal UUID.
 func (r *postgresUserRepository) FindByID(ctx context.Context, id uuid.UUID) (*domain.User, error) {
 	var user domain.User
 	err := r.db.GetContext(ctx, &user,
@@ -59,9 +56,6 @@ func (r *postgresUserRepository) FindByID(ctx context.Context, id uuid.UUID) (*d
 	return &user, nil
 }
 
-// Upsert inserts a new user or updates an existing one (by external_id).
-// Uses PostgreSQL's ON CONFLICT DO UPDATE to handle the upsert atomically.
-// A fresh UUID is generated when user.ID is zero (i.e. not supplied by the caller).
 func (r *postgresUserRepository) Upsert(ctx context.Context, user *domain.User) (*domain.User, error) {
 	if user.ID == (uuid.UUID{}) {
 		user.ID = uuid.New()
@@ -83,8 +77,6 @@ func (r *postgresUserRepository) Upsert(ctx context.Context, user *domain.User) 
 	return &result, nil
 }
 
-// ListAll returns all users, ordered by creation date descending.
-// This is an admin-only operation and should be protected at the controller layer.
 func (r *postgresUserRepository) ListAll(ctx context.Context) ([]*domain.User, error) {
 	var users []*domain.User
 	err := r.db.SelectContext(ctx, &users,

@@ -13,21 +13,17 @@ import (
 	"github.com/Ammar022/secure-ai-chat-backend/internal/shared/response"
 )
 
-// visitor tracks the rate limiter and last-seen time for a single client.
-// The last-seen time allows the cleanup goroutine to evict idle visitors.
 type visitor struct {
 	limiter  *rate.Limiter
 	lastSeen time.Time
 }
 
-// rateLimiterStore is a thread-safe map of limiters keyed by client identity.
 type rateLimiterStore struct {
 	mu       sync.RWMutex
 	visitors map[string]*visitor
 	rpm      int // requests per minute
 }
 
-// newRateLimiterStore creates a store and starts the cleanup goroutine.
 func newRateLimiterStore(rpm int) *rateLimiterStore {
 	s := &rateLimiterStore{
 		visitors: make(map[string]*visitor),
@@ -37,9 +33,6 @@ func newRateLimiterStore(rpm int) *rateLimiterStore {
 	return s
 }
 
-// getLimiter retrieves or creates a token-bucket limiter for the given key.
-// The bucket holds burst=rpm tokens and refills at rpm/60 tokens per second,
-// which approximates a per-minute limit while smoothing short bursts.
 func (s *rateLimiterStore) getLimiter(key string) *rate.Limiter {
 	s.mu.Lock()
 	defer s.mu.Unlock()
@@ -74,9 +67,7 @@ func (s *rateLimiterStore) cleanupLoop() {
 	}
 }
 
-// ── Middleware constructors ───────────────────────────────────────────────────
-
-// RateLimitByIP returns middleware that limits requests per source IP address.
+// RateLimitByIP returns middleware that limits requests per source IP address
 // This protects unauthenticated endpoints (auth routes, health check) from
 // brute-force and enumeration attacks.
 func RateLimitByIP(rpm int) func(http.Handler) http.Handler {
@@ -94,12 +85,12 @@ func RateLimitByIP(rpm int) func(http.Handler) http.Handler {
 	}
 }
 
-// RateLimitByUser returns middleware that limits requests per authenticated user.
+// RateLimitByUser returns middleware that limits requests per authenticated user
 // It falls back to per-IP limiting for unauthenticated requests, ensuring that
-// anonymous callers cannot exhaust per-user quotas.
+// anonymous callers cannot exhaust per-user quotas
 //
 // This middleware must be placed AFTER JWT validation so auth.ClaimsFromContext
-// can retrieve the user identity.
+// can retrieve the user identity
 func RateLimitByUser(rpm int) func(http.Handler) http.Handler {
 	store := newRateLimiterStore(rpm)
 	return func(next http.Handler) http.Handler {
@@ -124,11 +115,11 @@ func RateLimitByUser(rpm int) func(http.Handler) http.Handler {
 }
 
 // realIP extracts the real client IP, preferring X-Forwarded-For when the
-// application is behind a trusted proxy (load balancer, API gateway).
-// Falls back to the direct connection's remote address.
+// application is behind a trusted proxy (load balancer, API gateway)
+// Falls back to the direct connection's remote address
 //
 // Security note: X-Forwarded-For can be spoofed by clients.  In a real
-// production setup, strip all but the last trusted proxy-added hop.
+// production setup, strip all but the last trusted proxy-added hop
 func realIP(r *http.Request) string {
 	if xff := r.Header.Get("X-Forwarded-For"); xff != "" {
 		// Take the first (leftmost) address which is the original client

@@ -1,5 +1,3 @@
-// Package domain contains the Subscription aggregate root and all
-// business rules governing billing, renewal, and cancellation lifecycle.
 package domain
 
 import (
@@ -9,7 +7,7 @@ import (
 	"github.com/google/uuid"
 )
 
-// Tier represents the subscription plan level.
+// Tier represents the subscription plan level
 type Tier string
 
 const (
@@ -55,31 +53,31 @@ const (
 	BillingYearly  BillingCycle = "yearly"
 )
 
-// Subscription is the aggregate root for the subscription domain.
-// All state transitions are mediated through methods to preserve invariants.
+// Subscription is the aggregate root for the subscription domain
+// All state transitions are mediated through methods to preserve invariants
 type Subscription struct {
 	ID           uuid.UUID    `db:"id"`
 	UserID       uuid.UUID    `db:"user_id"`
 	Tier         Tier         `db:"tier"`
 	BillingCycle BillingCycle `db:"billing_cycle"`
 	AutoRenew    bool         `db:"auto_renew"`
-	// MaxMessages is cached from the tier at creation time.  -1 = unlimited.
+
 	MaxMessages  int `db:"max_messages"`
 	MessagesUsed int `db:"messages_used"`
-	// Price is the amount billed per cycle at time of creation.
+
 	Price       float64   `db:"price"`
 	StartDate   time.Time `db:"start_date"`
 	EndDate     time.Time `db:"end_date"`
 	RenewalDate time.Time `db:"renewal_date"`
 	IsActive    bool      `db:"is_active"`
-	// CancelledAt is set when the user cancels; nil if still active.
+
 	CancelledAt *time.Time `db:"cancelled_at"`
 	CreatedAt   time.Time  `db:"created_at"`
 	UpdatedAt   time.Time  `db:"updated_at"`
 }
 
 // NewSubscription creates a new Subscription value enforcing all creation
-// invariants.  The billing price for yearly is discounted by 20%.
+// invariants.  The billing price for yearly is discounted by 20%
 func NewSubscription(userID uuid.UUID, tier Tier, cycle BillingCycle, autoRenew bool) (*Subscription, error) {
 	if tier != TierBasic && tier != TierPro && tier != TierEnterprise {
 		return nil, errors.New("subscription: invalid tier")

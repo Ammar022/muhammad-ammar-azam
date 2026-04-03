@@ -12,22 +12,6 @@ import (
 	userrepo "github.com/Ammar022/secure-ai-chat-backend/internal/user/repository"
 )
 
-// UserSync middleware runs immediately after JWT validation on every
-// authenticated request.  It implements the "upsert-on-login" pattern:
-//
-//  1. Extracts the Auth0 subject + email from the validated Claims.
-//  2. Upserts the user in the local users table (insert on first login,
-//     update email on subsequent logins).
-//  3. Populates Claims.InternalUserID with the internal UUID so every
-//     downstream handler can access it without an extra DB call.
-//  4. Promotes the local DB role to admin if the user has that role stored
-//     locally, allowing admin promotion without reissuing Auth0 JWTs.
-//
-// Dependency direction (no cycles):
-//
-//	shared/middleware → shared/auth (for Claims)
-//	shared/middleware → user/domain  (for User entity)
-//	shared/middleware → user/repository (for Upsert)
 func UserSync(repo userrepo.UserRepository) func(http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -37,8 +21,6 @@ func UserSync(repo userrepo.UserRepository) func(http.Handler) http.Handler {
 				return
 			}
 
-			// Determine the role to seed into the DB on first creation.
-			// Auth0 roles (from JWT) take precedence for initial seeding.
 			seedRole := userdomain.RoleUser
 			for _, role := range claims.Roles {
 				if role == auth.RoleAdmin {

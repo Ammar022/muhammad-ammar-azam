@@ -1,6 +1,3 @@
-// Package repository provides the PostgreSQL implementation of the chat domain
-// repository interfaces.  All queries use parameterised placeholders — never
-// string concatenation — to prevent SQL injection.
 package repository
 
 import (
@@ -15,13 +12,10 @@ import (
 	chatdomain "github.com/Ammar022/secure-ai-chat-backend/internal/chat/domain"
 )
 
-// ── ChatRepository ────────────────────────────────────────────────────────────
-
 type postgresChatRepository struct {
 	db *sqlx.DB
 }
 
-// NewPostgresChatRepository creates the PostgreSQL-backed chat repository.
 func NewPostgresChatRepository(db *sqlx.DB) chatdomain.ChatRepository {
 	return &postgresChatRepository{db: db}
 }
@@ -92,25 +86,17 @@ func (r *postgresChatRepository) ListByUserID(
 	return msgs, total, nil
 }
 
-// ── QuotaRepository ───────────────────────────────────────────────────────────
-
 type postgresQuotaRepository struct {
 	db *sqlx.DB
 }
 
-// NewPostgresQuotaRepository creates the PostgreSQL-backed quota repository.
 func NewPostgresQuotaRepository(db *sqlx.DB) chatdomain.QuotaRepository {
 	return &postgresQuotaRepository{db: db}
 }
 
-// GetOrCreateForMonth fetches the quota record inside a transaction.
-// The SELECT … FOR UPDATE acquires a row-level lock, preventing two concurrent
-// requests from both reading "0 used" and both successfully claiming a slot.
 func (r *postgresQuotaRepository) GetOrCreateForMonth(
 	ctx context.Context, tx *sqlx.Tx, userID uuid.UUID, month string,
 ) (*chatdomain.QuotaUsage, error) {
-	// Upsert: insert a zero-count row if this is the first request this month.
-	// The RETURNING clause means we always get the current row back in one query.
 	var quota chatdomain.QuotaUsage
 	err := tx.QueryRowxContext(ctx, `
 		INSERT INTO quota_usages (id, user_id, month, free_messages_used, created_at, updated_at)
@@ -123,7 +109,6 @@ func (r *postgresQuotaRepository) GetOrCreateForMonth(
 		return nil, fmt.Errorf("quota repo: get or create: %w", err)
 	}
 
-	// Lock the row so concurrent transactions must wait
 	var locked chatdomain.QuotaUsage
 	err = tx.QueryRowxContext(ctx, `
 		SELECT id, user_id, month, free_messages_used, created_at, updated_at
@@ -137,7 +122,6 @@ func (r *postgresQuotaRepository) GetOrCreateForMonth(
 	return &locked, nil
 }
 
-// IncrementFreeUsage atomically bumps the free_messages_used counter.
 func (r *postgresQuotaRepository) IncrementFreeUsage(
 	ctx context.Context, tx *sqlx.Tx, id uuid.UUID,
 ) error {

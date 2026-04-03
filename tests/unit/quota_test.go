@@ -9,19 +9,15 @@ import (
 	chatdomain "github.com/Ammar022/secure-ai-chat-backend/internal/chat/domain"
 )
 
-// TestFreeMessagesPerMonth verifies the constant is correct.
 func TestFreeMessagesPerMonth(t *testing.T) {
 	assert.Equal(t, 3, chatdomain.FreeMessagesPerMonth)
 }
 
-// TestCurrentMonth verifies the format is YYYY-MM.
 func TestCurrentMonth(t *testing.T) {
 	month := chatdomain.CurrentMonth()
-	// Should be exactly 7 characters: "2025-04"
 	assert.Len(t, month, 7)
 	assert.Equal(t, string(month[4]), "-")
 
-	// Should match the current UTC month
 	expected := time.Now().UTC().Format("2006-01")
 	assert.Equal(t, expected, month)
 }

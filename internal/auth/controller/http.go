@@ -1,4 +1,3 @@
-// Package controller implements admin-only HTTP handlers for user management.
 package controller
 
 import (

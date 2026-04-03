@@ -1,6 +1,3 @@
-// Package unit contains pure domain logic tests.  These tests have zero
-// infrastructure dependencies — no database, no HTTP server, no Auth0.
-// They run fast and are the first line of defence against regressions.
 package unit
 
 import (
@@ -13,8 +10,6 @@ import (
 
 	subdomain "github.com/Ammar022/secure-ai-chat-backend/internal/subscription/domain"
 )
-
-// ── Tier tests ────────────────────────────────────────────────────────────────
 
 func TestTier_MaxMessages(t *testing.T) {
 	cases := []struct {
@@ -37,8 +32,6 @@ func TestTier_Price(t *testing.T) {
 	assert.Equal(t, 49.99, subdomain.TierPro.Price())
 	assert.Equal(t, 199.99, subdomain.TierEnterprise.Price())
 }
-
-// ── NewSubscription tests ─────────────────────────────────────────────────────
 
 func TestNewSubscription_Monthly(t *testing.T) {
 	userID := uuid.New()
@@ -85,8 +78,6 @@ func TestNewSubscription_InvalidCycle(t *testing.T) {
 	assert.Error(t, err)
 }
 
-// ── Subscription.Cancel tests ─────────────────────────────────────────────────
-
 func TestSubscription_Cancel(t *testing.T) {
 	sub := newTestSubscription(t, subdomain.TierBasic)
 
@@ -107,8 +98,6 @@ func TestSubscription_CancelTwice_ReturnsError(t *testing.T) {
 	err := sub.Cancel()
 	assert.Error(t, err)
 }
-
-// ── Subscription.Renew tests ──────────────────────────────────────────────────
 
 func TestSubscription_Renew_ResetsUsage(t *testing.T) {
 	sub := newTestSubscription(t, subdomain.TierPro)
@@ -150,8 +139,6 @@ func TestSubscription_Renew_AutoRenewDisabled_Fails(t *testing.T) {
 	assert.Error(t, err)
 }
 
-// ── Subscription.HasCapacity tests ───────────────────────────────────────────
-
 func TestSubscription_HasCapacity(t *testing.T) {
 	cases := []struct {
 		name         string
@@ -180,8 +167,6 @@ func TestSubscription_HasCapacity(t *testing.T) {
 	}
 }
 
-// ── Subscription.RemainingMessages tests ─────────────────────────────────────
-
 func TestSubscription_RemainingMessages(t *testing.T) {
 	sub := newTestSubscription(t, subdomain.TierBasic)
 	sub.MessagesUsed = 3
@@ -192,8 +177,6 @@ func TestSubscription_RemainingMessages(t *testing.T) {
 	enterprise.MaxMessages = -1
 	assert.Equal(t, -1, enterprise.RemainingMessages())
 }
-
-// ── Helpers ───────────────────────────────────────────────────────────────────
 
 func newTestSubscription(t *testing.T, tier subdomain.Tier) *subdomain.Subscription {
 	t.Helper()

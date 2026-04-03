@@ -8,12 +8,6 @@ import (
 	"github.com/Ammar022/secure-ai-chat-backend/internal/shared/response"
 )
 
-// SecureHeaders adds security-hardening HTTP response headers to every
-// response.  These are modelled on OWASP's recommended header set and
-// prevent a wide class of web attacks (XSS, clickjacking, MIME sniffing,
-// information leakage, etc.).
-//
-// Reference: https://owasp.org/www-project-secure-headers/
 func SecureHeaders(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		h := w.Header()
@@ -52,7 +46,7 @@ func SecureHeaders(next http.Handler) http.Handler {
 
 // RequestSizeLimit returns middleware that rejects request bodies exceeding
 // maxBytes.  Without this, malicious clients can send multi-GB payloads and
-// exhaust server memory.
+// exhaust server memory
 func RequestSizeLimit(maxBytes int64) func(http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {

@@ -10,8 +10,6 @@ import (
 	subdomain "github.com/Ammar022/secure-ai-chat-backend/internal/subscription/domain"
 )
 
-// ── Chat quota policy ─────────────────────────────────────────────────────────
-
 func TestQuotaPolicy_CanSendMessage_SameUser(t *testing.T) {
 	policy := chatdomain.NewQuotaPolicy()
 	id := uuid.New()
@@ -33,8 +31,6 @@ func TestQuotaPolicy_CanViewMessage_DifferentUser(t *testing.T) {
 	policy := chatdomain.NewQuotaPolicy()
 	assert.Error(t, policy.CanViewMessage(uuid.New(), uuid.New()))
 }
-
-// ── Subscription policy ───────────────────────────────────────────────────────
 
 func TestSubscriptionPolicy_CanCreate_SameUser(t *testing.T) {
 	policy := subdomain.NewSubscriptionPolicy()

@@ -1,5 +1,3 @@
-// Package repository provides the PostgreSQL implementation of the
-// subscription domain repository interfaces.
 package repository
 
 import (
@@ -16,12 +14,10 @@ import (
 	subdomain "github.com/Ammar022/secure-ai-chat-backend/internal/subscription/domain"
 )
 
-// postgresSubscriptionRepository implements SubscriptionRepository.
 type postgresSubscriptionRepository struct {
 	db *sqlx.DB
 }
 
-// NewPostgresSubscriptionRepository creates the PostgreSQL-backed subscription repository.
 func NewPostgresSubscriptionRepository(db *sqlx.DB) subdomain.SubscriptionRepository {
 	return &postgresSubscriptionRepository{db: db}
 }
@@ -136,24 +132,14 @@ func (r *postgresSubscriptionRepository) FindDueForRenewal(ctx context.Context) 
 	return subs, nil
 }
 
-// ── SubscriptionQuotaRepository ──────────────────────────────────────────────
-// Implements chatdomain.SubscriptionQuotaRepository — the cross-module
-// contract that allows the chat quota engine to deduct from subscriptions
-// without creating a circular package dependency.
-
 type postgresSubscriptionQuotaRepository struct {
 	db *sqlx.DB
 }
 
-// NewPostgresSubscriptionQuotaRepository creates the quota-side subscription repository.
 func NewPostgresSubscriptionQuotaRepository(db *sqlx.DB) chatdomain.SubscriptionQuotaRepository {
 	return &postgresSubscriptionQuotaRepository{db: db}
 }
 
-// FindActiveForUserOrderedByCreatedDesc returns active subscriptions that
-// either have remaining capacity or are enterprise (unlimited).  The results
-// are ordered newest-first so the chat service charges the most-recently
-// purchased bundle first.
 func (r *postgresSubscriptionQuotaRepository) FindActiveForUserOrderedByCreatedDesc(
 	ctx context.Context, tx *sqlx.Tx, userID uuid.UUID,
 ) ([]*chatdomain.SubscriptionForQuota, error) {
@@ -182,7 +168,6 @@ func (r *postgresSubscriptionQuotaRepository) FindActiveForUserOrderedByCreatedD
 	return results, rows.Err()
 }
 
-// DeductMessage atomically increments messages_used for a subscription.
 func (r *postgresSubscriptionQuotaRepository) DeductMessage(
 	ctx context.Context, tx *sqlx.Tx, subscriptionID uuid.UUID,
 ) error {

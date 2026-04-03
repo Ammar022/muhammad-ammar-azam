@@ -1,4 +1,3 @@
-// Package controller contains the HTTP handler for the subscription module.
 package controller
 
 import (
@@ -17,13 +16,13 @@ import (
 	"github.com/Ammar022/secure-ai-chat-backend/internal/subscription/dto"
 )
 
-// SubscriptionController handles all HTTP requests for /api/v1/subscriptions.
+// SubscriptionController handles all HTTP requests for /api/v1/subscriptions
 type SubscriptionController struct {
 	service  *subdomain.SubscriptionService
 	validate *validator.Validate
 }
 
-// NewSubscriptionController creates a SubscriptionController.
+// NewSubscriptionController creates a SubscriptionController
 func NewSubscriptionController(service *subdomain.SubscriptionService) *SubscriptionController {
 	v := validator.New()
 	if err := v.RegisterValidation("tier", func(fl validator.FieldLevel) bool {
@@ -43,7 +42,7 @@ func NewSubscriptionController(service *subdomain.SubscriptionService) *Subscrip
 	}
 }
 
-// Routes registers subscription endpoints on the given chi router.
+// Routes registers subscription endpoints on the given chi router
 func (c *SubscriptionController) Routes(r chi.Router) {
 	r.Post("/", c.createSubscription)
 	r.Get("/", c.listSubscriptions)
@@ -239,8 +238,6 @@ func (c *SubscriptionController) toggleAutoRenew(w http.ResponseWriter, r *http.
 	response.Success(w, toSubscriptionResponse(sub))
 }
 
-// ── Response shape ────────────────────────────────────────────────────────────
-
 type subscriptionResponse struct {
 	ID                string  `json:"id" example:"a1b2c3d4-e5f6-7890-abcd-ef1234567890"`
 	Tier              string  `json:"tier" example:"pro" enums:"basic,pro,enterprise"`
@@ -281,8 +278,7 @@ func toSubscriptionResponse(s *subdomain.Subscription) subscriptionResponse {
 	return r
 }
 
-// ── Helpers ───────────────────────────────────────────────────────────────────
-
+// parseUUID extracts and parses a UUID from the request URL parameter
 func parseUUID(r *http.Request, param string) (uuid.UUID, error) {
 	return uuid.Parse(chi.URLParam(r, param))
 }

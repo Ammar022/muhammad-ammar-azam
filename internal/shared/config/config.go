@@ -8,8 +8,6 @@ import (
 	"github.com/spf13/viper"
 )
 
-// Config holds every setting the application needs.  All fields are populated
-// from environment variables; see .env.example for the full list.
 type Config struct {
 	App       AppConfig
 	DB        DBConfig
@@ -20,7 +18,6 @@ type Config struct {
 	Log       LogConfig
 }
 
-// AppConfig holds generic application-level settings.
 type AppConfig struct {
 	Env                    string // development | staging | production
 	Port                   int
@@ -29,7 +26,6 @@ type AppConfig struct {
 	RenewalIntervalMinutes int // how often the renewal job runs (default 60)
 }
 
-// DBConfig holds PostgreSQL connection parameters.
 type DBConfig struct {
 	Host            string
 	Port            int
@@ -42,7 +38,6 @@ type DBConfig struct {
 	ConnMaxLifetime time.Duration
 }
 
-// DSN returns the PostgreSQL data-source name (connection string).
 func (d DBConfig) DSN() string {
 	return fmt.Sprintf(
 		"host=%s port=%d dbname=%s user=%s password=%s sslmode=%s",
@@ -50,17 +45,12 @@ func (d DBConfig) DSN() string {
 	)
 }
 
-// Auth0Config holds settings for the external OIDC/OAuth2 provider (Auth0).
-// The backend validates JWTs issued by Auth0 – it never issues tokens itself.
 type Auth0Config struct {
-	Domain     string // e.g. "your-tenant.auth0.com"
-	Audience   string // API identifier configured in the Auth0 dashboard
-	RolesClaim string // custom namespace for the roles array claim
+	Domain     string
+	Audience   string
+	RolesClaim string
 }
 
-// JWKSEndpoint returns the well-known JWKS URL for Auth0.
-// If Domain is already a full URL (starts with http:// or https://) it is
-// used directly — this allows integration tests to point at an httptest server.
 func (a Auth0Config) JWKSEndpoint() string {
 	if strings.HasPrefix(a.Domain, "http://") || strings.HasPrefix(a.Domain, "https://") {
 		return a.Domain + "/.well-known/jwks.json"
@@ -68,7 +58,6 @@ func (a Auth0Config) JWKSEndpoint() string {
 	return fmt.Sprintf("https://%s/.well-known/jwks.json", a.Domain)
 }
 
-// Issuer returns the expected token issuer URL.
 func (a Auth0Config) Issuer() string {
 	if strings.HasPrefix(a.Domain, "http://") || strings.HasPrefix(a.Domain, "https://") {
 		return a.Domain + "/"
@@ -76,7 +65,6 @@ func (a Auth0Config) Issuer() string {
 	return fmt.Sprintf("https://%s/", a.Domain)
 }
 
-// SecurityConfig holds all security-related settings.
 type SecurityConfig struct {
 	CORSAllowedOrigins  []string
 	AntiReplayWindowSec int
@@ -84,24 +72,22 @@ type SecurityConfig struct {
 	RequestTimeoutSec   int
 }
 
-// RateLimitConfig holds per-endpoint rate limits (requests per minute).
 type RateLimitConfig struct {
-	IPRPM           int // global per-IP
-	UserRPM         int // per authenticated user
-	AuthRPM         int // /auth/* endpoints
-	ChatRPM         int // /chat/* endpoints
-	SubscriptionRPM int // /subscription/* endpoints
+	IPRPM           int
+	UserRPM         int
+	AuthRPM         int
+	ChatRPM         int
+	SubscriptionRPM int
 }
 
-// AIConfig holds parameters for the mocked AI service.
 type AIConfig struct {
 	LatencyMinMs int
 	LatencyMaxMs int
 }
 
 type LogConfig struct {
-	Level  string // debug | info | warn | error
-	Format string // json | console
+	Level  string
+	Format string
 }
 
 func Load() (*Config, error) {

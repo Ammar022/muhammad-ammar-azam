@@ -16,19 +16,11 @@ import (
 	"github.com/Ammar022/secure-ai-chat-backend/internal/shared/response"
 )
 
-// Validator validates Auth0 JWTs using a cached JWKS key set.
-// It enforces issuer, audience, expiry, and signature validation.
-//
-// Design note: We cache the JWKS with auto-refresh to avoid fetching
-// Auth0's public keys on every request while staying resilient to key rotation.
 type Validator struct {
 	cfg      config.Auth0Config
 	keyCache *jwk.Cache
 }
 
-// NewValidator creates a Validator and warms up the JWKS cache.
-// This should be called once at application startup.
-// AUTH0_DOMAIN must be set; the application will not start without it.
 func NewValidator(ctx context.Context, cfg config.Auth0Config) (*Validator, error) {
 	if cfg.Domain == "" {
 		return nil, fmt.Errorf("auth: AUTH0_DOMAIN is required")
@@ -36,13 +28,10 @@ func NewValidator(ctx context.Context, cfg config.Auth0Config) (*Validator, erro
 
 	cache := jwk.NewCache(ctx)
 
-	// Register the JWKS endpoint with auto-refresh interval of 15 minutes.
-	// The library will refresh the cache in the background before keys expire.
 	if err := cache.Register(cfg.JWKSEndpoint(), jwk.WithMinRefreshInterval(15*time.Minute)); err != nil {
 		return nil, fmt.Errorf("auth: register JWKS cache: %w", err)
 	}
 
-	// Eagerly fetch the keys so the first request does not incur JWKS latency
 	if _, err := cache.Refresh(ctx, cfg.JWKSEndpoint()); err != nil {
 		return nil, fmt.Errorf("auth: initial JWKS fetch failed: %w", err)
 	}
@@ -50,9 +39,6 @@ func NewValidator(ctx context.Context, cfg config.Auth0Config) (*Validator, erro
 	return &Validator{cfg: cfg, keyCache: cache}, nil
 }
 
-// Middleware validates the Auth0 Bearer token on every request.
-// It extracts the token, validates it against the Auth0 JWKS (RS256),
-// and stores the parsed claims in the request context.
 func (v *Validator) Middleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		tokenStr, err := extractBearerToken(r)
@@ -96,11 +82,6 @@ func (v *Validator) Middleware(next http.Handler) http.Handler {
 	})
 }
 
-// RequireRole returns middleware that enforces a specific role.
-// It must be chained AFTER the JWT validation middleware.
-//
-// This enforces RBAC at the controller level (domain policies add a second
-// layer of enforcement for sensitive operations).
 func RequireRole(roles ...Role) func(http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -122,7 +103,6 @@ func RequireRole(roles ...Role) func(http.Handler) http.Handler {
 	}
 }
 
-// extractBearerToken parses "Authorization: Bearer <token>" from the request.
 func extractBearerToken(r *http.Request) (string, error) {
 	header := r.Header.Get("Authorization")
 	if header == "" {
@@ -142,20 +122,15 @@ func extractBearerToken(r *http.Request) (string, error) {
 	return token, nil
 }
 
-// extractClaims maps raw JWT claims to our typed Claims struct.
-// Roles are extracted from the custom Auth0 namespace claim.
 func (v *Validator) extractClaims(token jwt.Token) (*Claims, error) {
 	subject := token.Subject()
 	if subject == "" {
 		return nil, fmt.Errorf("token missing subject claim")
 	}
 
-	// Extract email from standard claim (Auth0 sets this if the scope includes "email")
 	email, _ := token.Get("email")
 	emailStr, _ := email.(string)
 
-	// Extract custom roles claim injected by Auth0 Action/Rule
-	// Expected value: []interface{} containing role strings
 	var roles []Role
 	if rawRoles, ok := token.Get(v.cfg.RolesClaim); ok {
 		if roleSlice, ok := rawRoles.([]interface{}); ok {
@@ -167,7 +142,6 @@ func (v *Validator) extractClaims(token jwt.Token) (*Claims, error) {
 		}
 	}
 
-	// Default to "user" role if no roles are present in the token
 	if len(roles) == 0 {
 		roles = []Role{RoleUser}
 	}

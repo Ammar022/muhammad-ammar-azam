@@ -1,7 +1,3 @@
-// Package controller contains the HTTP handler for the chat module.
-// It sits at the outermost layer of the architecture: it handles HTTP
-// concerns (parsing, validation, serialisation) and delegates all
-// business logic to the domain service.
 package controller
 
 import (

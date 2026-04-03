@@ -1,7 +1,3 @@
--- Migration: 000002_create_subscriptions
--- Stores subscription bundles.  A user may have multiple active bundles
--- simultaneously (different tiers, different billing cycles).
-
 CREATE TABLE IF NOT EXISTS subscriptions (
     id            UUID        PRIMARY KEY DEFAULT gen_random_uuid(),
     user_id       UUID        NOT NULL REFERENCES users(id) ON DELETE CASCADE,
@@ -20,8 +16,6 @@ CREATE TABLE IF NOT EXISTS subscriptions (
     updated_at    TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
--- Quota check: find active subscriptions quickly for a user
 CREATE INDEX IF NOT EXISTS idx_subscriptions_user_id        ON subscriptions (user_id);
 CREATE INDEX IF NOT EXISTS idx_subscriptions_user_active    ON subscriptions (user_id, is_active, end_date);
--- Renewal job: find subscriptions due for renewal
 CREATE INDEX IF NOT EXISTS idx_subscriptions_renewal        ON subscriptions (renewal_date) WHERE auto_renew = TRUE AND is_active = TRUE;
