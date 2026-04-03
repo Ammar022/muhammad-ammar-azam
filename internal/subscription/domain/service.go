@@ -8,7 +8,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/rs/zerolog/log"
 
-	apperrors "github.com/Ammar022/secure-ai-chat-backend/internal/shared/errors"
+	apperrors "github.com/Ammar022/muhammad-ammar-azam/internal/shared/errors"
 )
 
 // SubscriptionRepository defines the persistence contract for subscriptions.

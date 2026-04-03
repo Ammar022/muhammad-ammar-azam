@@ -102,7 +102,7 @@ func Load() (*Config, error) {
 
 	v.SetDefault("APP_ENV", "development")
 	v.SetDefault("APP_PORT", 8080)
-	v.SetDefault("APP_NAME", "secure-ai-chat-backend")
+	v.SetDefault("APP_NAME", "muhammad-ammar-azam")
 	v.SetDefault("APP_VERSION", "1.0.0")
 
 	v.SetDefault("DB_PORT", 5432)

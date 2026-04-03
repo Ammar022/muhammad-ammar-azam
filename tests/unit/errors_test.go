@@ -9,7 +9,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	apperrors "github.com/Ammar022/secure-ai-chat-backend/internal/shared/errors"
+	apperrors "github.com/Ammar022/muhammad-ammar-azam/internal/shared/errors"
 )
 
 // ── AppError.Error() ──────────────────────────────────────────────────────────

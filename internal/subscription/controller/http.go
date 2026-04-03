@@ -9,11 +9,11 @@ import (
 	"github.com/go-playground/validator/v10"
 	"github.com/google/uuid"
 
-	"github.com/Ammar022/secure-ai-chat-backend/internal/shared/auth"
-	apperrors "github.com/Ammar022/secure-ai-chat-backend/internal/shared/errors"
-	"github.com/Ammar022/secure-ai-chat-backend/internal/shared/response"
-	subdomain "github.com/Ammar022/secure-ai-chat-backend/internal/subscription/domain"
-	"github.com/Ammar022/secure-ai-chat-backend/internal/subscription/dto"
+	"github.com/Ammar022/muhammad-ammar-azam/internal/shared/auth"
+	apperrors "github.com/Ammar022/muhammad-ammar-azam/internal/shared/errors"
+	"github.com/Ammar022/muhammad-ammar-azam/internal/shared/response"
+	subdomain "github.com/Ammar022/muhammad-ammar-azam/internal/subscription/domain"
+	"github.com/Ammar022/muhammad-ammar-azam/internal/subscription/dto"
 )
 
 // SubscriptionController handles all HTTP requests for /api/v1/subscriptions

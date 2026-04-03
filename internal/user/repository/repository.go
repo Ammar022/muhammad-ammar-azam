@@ -5,7 +5,7 @@ import (
 
 	"github.com/google/uuid"
 
-	"github.com/Ammar022/secure-ai-chat-backend/internal/user/domain"
+	"github.com/Ammar022/muhammad-ammar-azam/internal/user/domain"
 )
 
 type UserRepository interface {

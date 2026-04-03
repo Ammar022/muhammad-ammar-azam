@@ -11,7 +11,7 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/stretchr/testify/assert"
 
-	"github.com/Ammar022/secure-ai-chat-backend/internal/shared/middleware"
+	"github.com/Ammar022/muhammad-ammar-azam/internal/shared/middleware"
 )
 
 // ── Timestamp edge cases ──────────────────────────────────────────────────────

@@ -4,8 +4,8 @@ import (
 	"net/http"
 	"strings"
 
-	apperrors "github.com/Ammar022/secure-ai-chat-backend/internal/shared/errors"
-	"github.com/Ammar022/secure-ai-chat-backend/internal/shared/response"
+	apperrors "github.com/Ammar022/muhammad-ammar-azam/internal/shared/errors"
+	"github.com/Ammar022/muhammad-ammar-azam/internal/shared/response"
 )
 
 func SecureHeaders(next http.Handler) http.Handler {

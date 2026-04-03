@@ -11,7 +11,7 @@ import (
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq" // PostgreSQL driver
 
-	"github.com/Ammar022/secure-ai-chat-backend/internal/shared/config"
+	"github.com/Ammar022/muhammad-ammar-azam/internal/shared/config"
 )
 
 type DB struct {

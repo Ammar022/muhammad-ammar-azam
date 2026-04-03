@@ -10,7 +10,7 @@ import (
 	"github.com/jmoiron/sqlx"
 	"github.com/rs/zerolog/log"
 
-	apperrors "github.com/Ammar022/secure-ai-chat-backend/internal/shared/errors"
+	apperrors "github.com/Ammar022/muhammad-ammar-azam/internal/shared/errors"
 )
 
 type ChatRepository interface {

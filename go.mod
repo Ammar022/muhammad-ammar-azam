@@ -1,4 +1,4 @@
-module github.com/Ammar022/secure-ai-chat-backend
+module github.com/Ammar022/muhammad-ammar-azam
 
 go 1.22.0
 

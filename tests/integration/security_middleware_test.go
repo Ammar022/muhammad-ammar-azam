@@ -12,7 +12,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/Ammar022/secure-ai-chat-backend/internal/shared/middleware"
+	"github.com/Ammar022/muhammad-ammar-azam/internal/shared/middleware"
 )
 
 // okHandler is a minimal HTTP handler that always returns 200 OK.

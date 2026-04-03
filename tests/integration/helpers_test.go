@@ -5,7 +5,7 @@ import (
 
 	"github.com/google/uuid"
 
-	"github.com/Ammar022/secure-ai-chat-backend/internal/shared/auth"
+	"github.com/Ammar022/muhammad-ammar-azam/internal/shared/auth"
 )
 
 // fakeClaimsMiddleware injects a synthetic *auth.Claims into the request

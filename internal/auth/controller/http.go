@@ -8,11 +8,11 @@ import (
 	"github.com/google/uuid"
 	"github.com/rs/zerolog/log"
 
-	"github.com/Ammar022/secure-ai-chat-backend/internal/shared/auth"
-	apperrors "github.com/Ammar022/secure-ai-chat-backend/internal/shared/errors"
-	"github.com/Ammar022/secure-ai-chat-backend/internal/shared/response"
-	userdomain "github.com/Ammar022/secure-ai-chat-backend/internal/user/domain"
-	userrepo "github.com/Ammar022/secure-ai-chat-backend/internal/user/repository"
+	"github.com/Ammar022/muhammad-ammar-azam/internal/shared/auth"
+	apperrors "github.com/Ammar022/muhammad-ammar-azam/internal/shared/errors"
+	"github.com/Ammar022/muhammad-ammar-azam/internal/shared/response"
+	userdomain "github.com/Ammar022/muhammad-ammar-azam/internal/user/domain"
+	userrepo "github.com/Ammar022/muhammad-ammar-azam/internal/user/repository"
 )
 
 // AdminController exposes an admin-only endpoint to manage user roles.

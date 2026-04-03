@@ -1,6 +1,6 @@
-# Secure AI Chat Backend
+# Muhammad Ammar Azam — Secure AI Chat Backend
 
-[![Go Report Card](https://goreportcard.com/badge/github.com/Ammar022/secure-ai-chat-backend)](https://goreportcard.com/report/github.com/Ammar022/secure-ai-chat-backend)
+[![Go Report Card](https://goreportcard.com/badge/github.com/Ammar022/muhammad-ammar-azam)](https://goreportcard.com/report/github.com/Ammar022/muhammad-ammar-azam)
 
 A production-grade, secure REST API built with **Go**, implementing an **AI Chat Module** and a **Subscription Bundle Module**. The architecture follows **Domain-Driven Design (DDD)** and **Clean Architecture** principles.
 
@@ -10,13 +10,122 @@ A production-grade, secure REST API built with **Go**, implementing an **AI Chat
 
 ## Table of Contents
 
+- [Architecture Decisions](#architecture-decisions)
+- [Security Model](#security-model)
 - [Features](#features)
 - [Project Structure](#project-structure)
 - [Quick Start](#quick-start)
 - [Environment Variables](#environment-variables)
 - [API Reference](#api-reference)
-- [Security Model](#security-model)
 - [Testing](#testing)
+
+---
+
+## Architecture Decisions
+
+### 1. Domain-Driven Design with Clean Architecture
+
+Each business module (`chat`, `subscription`, `user`, `admin`) is fully self-contained with strict layer separation:
+
+```
+domain/entity.go     ← Pure Go structs, no framework imports
+domain/policy.go     ← Authorization rules as pure functions
+domain/service.go    ← Orchestration (quota, AI call, persistence)
+repository/          ← Interface defined in domain; Postgres impl separate
+dto/                 ← Input shapes for HTTP layer only
+controller/http.go   ← Thin HTTP adapter; delegates to service
+```
+
+Business logic has **zero dependency** on chi, HTTP, or any transport concern. The domain layer is tested in pure unit tests with no database or server setup.
+
+### 2. Atomic Quota Deduction
+
+The free quota and subscription bundle quota are deducted using `SELECT ... FOR UPDATE` inside a `SERIALIZABLE` transaction. This prevents double-spending under concurrent requests — a critical correctness constraint for a billing system.
+
+### 3. Anti-Replay via Nonce + Timestamp
+
+Rather than session-bound tokens or proof-of-possession (which require client-side key management), we use a stateless anti-replay scheme:
+- `X-Request-Timestamp` — Unix epoch; rejected if outside ±`SECURITY_ANTI_REPLAY_WINDOW_SEC` of server time
+- `X-Nonce` — unique string per request; stored in an in-memory LRU cache; replay returns 401
+
+This satisfies the requirement that *"possession of an access token alone must not be sufficient to access APIs"* without requiring stateful sessions.
+
+### 4. Auth0 as External Provider (no custom auth)
+
+Auth0 handles all credential management, MFA, social login, and token signing. The API trusts Auth0's RS256-signed JWTs validated against the JWKS endpoint — standard OIDC. No password hashing, no session store, no custom token issuance in this codebase.
+
+### 5. Role Propagation: JWT → DB → Context
+
+Roles flow in one direction:
+1. Auth0 Action injects roles into a custom JWT claim (`AUTH0_ROLES_CLAIM`)
+2. JWT middleware extracts and normalises roles (lowercase)
+3. `UserSync` middleware upserts the user in the local DB, syncing the role
+4. DB role can promote a user even before their token is refreshed (fallback escalation)
+
+### 6. Circular Import Prevention
+
+`Role` type and `UserSync` middleware live in `user/domain` and `shared/middleware` respectively — not in `shared/auth` — to avoid the circular dependency `auth ↔ user/domain`.
+
+### 7. Subscription Renewal as a Background Job
+
+A goroutine runs every `RENEWAL_INTERVAL_MINUTES` (default 60) to process expiring subscriptions. Payment is simulated with a 30% failure rate. Failed payments mark subscriptions inactive; successful ones extend the billing window and reset message counts.
+
+### 8. Test Strategy
+
+- **Unit tests** — pure domain logic; no DB, no HTTP, no Auth0
+- **Integration tests** — real HTTP stack (`httptest`) with a mock JWKS server serving genuine RS256-signed JWTs; no DB required
+- Auth0 is **mocked at the JWKS level**, not bypassed — the same JWT validation code path runs in tests as in production
+
+---
+
+## Security Model
+
+### Authentication Flow
+
+```
+Client obtains JWT from Auth0 (dashboard test tab, password grant, or social login)
+
+API request → Authorization: Bearer <token>
+  → Extract token from header
+  → Fetch Auth0 JWKS (cached, auto-refreshed every 15 min)
+  → Validate RS256 signature
+  → Verify issuer (AUTH0_DOMAIN) + audience (AUTH0_AUDIENCE) + expiry
+  → Extract subject, email, roles from claims (normalised to lowercase)
+  → UserSync middleware — upsert local user record, populate InternalUserID
+  → Claims injected into request context
+```
+
+### Authorization Layers
+
+1. **JWT middleware** — every `/api/v1` request must carry a valid, non-expired token
+2. **RBAC middleware** — `RequireRole(admin)` guards all `/api/v1/admin/*` routes
+3. **Domain policy** — pure functions enforce ownership (users can only read/write their own resources)
+
+### Anti-Replay
+
+Every authenticated request must include:
+- `X-Request-Timestamp` — Unix epoch; rejected outside ±`SECURITY_ANTI_REPLAY_WINDOW_SEC` seconds (default ±300s)
+- `X-Nonce` — unique string per request; cached server-side; duplicate returns 401
+
+Missing headers → **400**. Valid nonce reused → **401**.
+
+### Rate Limiting
+
+| Scope | Default |
+|---|---|
+| Global IP limit (pre-auth) | 120 req/min |
+| Per-user limit (post-auth) | 60 req/min |
+| Chat endpoint | 20 req/min |
+
+### Other Protections
+
+- Secure HTTP headers: CSP, HSTS, X-Frame-Options, X-Content-Type-Options, Referrer-Policy, Permissions-Policy
+- Restricted CORS (configurable origins; credentials not exposed)
+- Request body size limit (default 1 MB)
+- `Content-Type: application/json` enforced on all mutating endpoints
+- Global request timeout (returns 504 if exceeded)
+- XSS sanitisation via `bluemonday.StrictPolicy()` on all user input
+- Unknown JSON fields rejected (`DisallowUnknownFields`)
 
 ---
 
@@ -35,31 +144,19 @@ A production-grade, secure REST API built with **Go**, implementing an **AI Chat
 - **Cancellation** preserves usage data and grants access until end of billing period
 - Background renewal job (hourly)
 
-### Security
-- **Auth0** — RS256 JWT validation via JWKS; issuer, audience, and expiry enforced on every request
-- **Role-Based Access Control** — `user` and `admin` roles enforced at controller and domain policy levels
-- **Anti-replay protection** — `X-Nonce` + `X-Request-Timestamp` with configurable window
-- **Rate limiting** — per-IP (global) and per-user (post-auth), stricter limits on auth and chat endpoints
-- **Secure HTTP headers** — CSP, HSTS, X-Frame-Options, X-Content-Type-Options, etc.
-- **Request size limiting** — configurable max body bytes (default 1 MB)
-- **Strict Content-Type enforcement** — only `application/json` accepted on mutating requests
-- **Request timeout** — configurable; returns 504 if exceeded
-- **XSS sanitization** — `bluemonday.StrictPolicy()` applied to all user input before persistence
-- **No open endpoints** — every API route requires a valid JWT
-
 ### Observability
-- **Structured JSON logging** with zerolog — request ID, user ID, latency on every request
+- Structured JSON logging with zerolog — request ID, user ID, latency on every request
 - **Health endpoint** (`GET /health`) — DB connectivity check, version, uptime
 - **Admin metrics endpoint** (`GET /api/v1/admin/metrics`) — usage statistics, admin-only
 
-
+---
 
 ## Project Structure
 
 ```
-secure-ai-chat-backend/
+muhammad-ammar-azam/
 ├── cmd/api/main.go                     # Entry point — composition root
-├── docs/                               # Auto-generated Swagger spec (swag init)
+├── docs/                               # Swagger spec (swag init) + submission PDF
 ├── internal/
 │   ├── shared/
 │   │   ├── config/        config.go    # Viper-based env config
@@ -69,8 +166,7 @@ secure-ai-chat-backend/
 │   │   ├── response/      response.go  # JSON envelope helpers
 │   │   ├── auth/
 │   │   │   ├── claims.go              # JWT claims struct + context helpers
-│   │   │   ├── middleware.go          # Auth0 RS256 JWKS validator
-│   │   │   └── rbac.go               # RequireRole middleware
+│   │   │   └── middleware.go          # Auth0 RS256 JWKS validator + RequireRole
 │   │   └── middleware/
 │   │       ├── requestid.go           # UUID request ID propagation
 │   │       ├── logger.go              # Structured request/response logging
@@ -97,11 +193,11 @@ secure-ai-chat-backend/
 │   │   │   ├── entity.go              # Subscription aggregate root
 │   │   │   ├── policy.go              # SubscriptionPolicy
 │   │   │   └── service.go             # SubscriptionService + renewal job
-│   │   ├── repository/postgres.go     # Subscription + quota-side repos
+│   │   ├── repository/postgres.go     # Subscription PostgreSQL repo
 │   │   ├── dto/request.go             # Input DTOs
 │   │   └── controller/http.go         # chi HTTP handlers
 │   └── admin/
-│       └── controller/http.go         # Admin metrics + health endpoints
+│       └── controller/http.go         # Admin metrics + user management
 ├── migrations/
 │   ├── 000001_create_users.*
 │   ├── 000002_create_subscriptions.*
@@ -109,7 +205,7 @@ secure-ai-chat-backend/
 │   └── 000004_create_chat_messages.*
 ├── tests/
 │   ├── unit/                          # Domain logic, quota math, subscription lifecycle
-│   └── integration/                   # Middleware, auth (mocked provider), rate limiting
+│   └── integration/                   # Middleware, auth (mocked JWKS), rate limiting
 ├── Dockerfile
 ├── docker-compose.yml
 ├── Makefile
@@ -129,8 +225,8 @@ secure-ai-chat-backend/
 ### 1. Clone and configure
 
 ```bash
-git clone https://github.com/Ammar022/secure-ai-chat-backend
-cd secure-ai-chat-backend
+git clone https://github.com/Ammar022/muhammad-ammar-azam
+cd muhammad-ammar-azam
 cp .env.example .env
 # Edit .env — set AUTH0_DOMAIN, AUTH0_AUDIENCE, AUTH0_ROLES_CLAIM
 ```
@@ -148,13 +244,9 @@ make run
 
 ### 3. Obtain an access token
 
-The API accepts any valid Auth0 RS256 JWT. Two ways to get one:
-
----
-
 #### Option A — Email / password (Resource Owner Password Grant)
 
-Requires the **Password** grant type enabled on your Auth0 Application and a **Default Directory** (Username-Password-Authentication) set on your tenant.
+Requires the **Password** grant type enabled on your Auth0 Application and a **Default Directory** set on your tenant.
 
 ```bash
 curl -X POST https://<AUTH0_DOMAIN>/oauth/token \
@@ -170,12 +262,10 @@ curl -X POST https://<AUTH0_DOMAIN>/oauth/token \
   }'
 ```
 
----
-
 #### Option B — Google OAuth (Authorization Code flow)
 
-1. **Enable Google social connection** in Auth0 Dashboard → Authentication → Social → Google.
-2. Add `http://localhost:3000/callback` (or any placeholder URL) to **Allowed Callback URLs** on your Application.
+1. Enable Google social connection in Auth0 Dashboard → Authentication → Social → Google.
+2. Add `http://localhost:3000/callback` to **Allowed Callback URLs** on your Application.
 3. Open this URL in a browser and log in with Google:
 
 ```
@@ -188,7 +278,7 @@ https://<AUTH0_DOMAIN>/authorize
   &connection=google-oauth2
 ```
 
-4. After login the browser redirects to `localhost:3000/callback?code=<AUTH_CODE>`. Copy the code (the page won't load — that's fine).
+4. After login the browser redirects to `localhost:3000/callback?code=<AUTH_CODE>`. Copy the code.
 5. Exchange the code for tokens:
 
 ```bash
@@ -202,8 +292,6 @@ curl -X POST https://<AUTH0_DOMAIN>/oauth/token \
     "redirect_uri":  "http://localhost:3000/callback"
   }'
 ```
-
----
 
 #### Using the token
 
@@ -225,14 +313,7 @@ curl http://localhost:8080/api/v1/subscriptions \
 Swagger UI: http://localhost:8080/swagger/index.html
 ```
 
-### 5. Regenerate API docs (after changing annotations)
-
-```bash
-# Regenerate docs/ package and swagger.json/swagger.yaml
-swag init -g cmd/api/main.go -o docs --parseInternal --parseDependency
-```
-
-### 6. Run tests
+### 5. Run tests
 
 ```bash
 make test              # all tests (unit + integration)
@@ -252,7 +333,7 @@ See [`.env.example`](./.env.example) for the full list with descriptions.
 | `DB_HOST` | ✓ | PostgreSQL host |
 | `DB_NAME` | ✓ | Database name |
 | `AUTH0_DOMAIN` | ✓ | Auth0 tenant domain (e.g. `dev-xxx.us.auth0.com`) |
-| `AUTH0_AUDIENCE` | ✓ | Auth0 API identifier (e.g. `https://api`) |
+| `AUTH0_AUDIENCE` | ✓ | Auth0 API identifier (e.g. `https://chat-api`) |
 | `AUTH0_ROLES_CLAIM` | — | Custom namespace for roles claim (default: `https://api.yourdomain.com/roles`) |
 | `CORS_ALLOWED_ORIGINS` | — | Comma-separated allowed origins (default: `http://localhost:3000`) |
 | `RATE_LIMIT_IP_RPM` | — | IP rate limit req/min (default: 100) |
@@ -260,43 +341,6 @@ See [`.env.example`](./.env.example) for the full list with descriptions.
 | `AI_LATENCY_MIN_MS` | — | Mock AI min latency ms (default: 500) |
 | `AI_LATENCY_MAX_MS` | — | Mock AI max latency ms (default: 2000) |
 | `RENEWAL_INTERVAL_MINUTES` | — | Subscription renewal job interval (default: 60) |
-
----
-
-## Security Model
-
-### Authentication flow
-
-```
-Client obtains JWT from Auth0 (dashboard test tab, M2M, or SPA login)
-
-API request → Authorization: Bearer <token>
-  → Extract token from header
-  → Fetch Auth0 JWKS (cached, auto-refreshed every 15 min)
-  → Validate RS256 signature
-  → Verify issuer (AUTH0_DOMAIN) + audience (AUTH0_AUDIENCE) + expiry
-  → Extract subject, email, roles from claims
-  → UserSync middleware — upsert local user record, populate InternalUserID
-  → Claims injected into request context
-```
-
-### Authorization layers
-
-1. **JWT middleware** — every `/api/v1` request must carry a valid token
-2. **RBAC middleware** — `RequireRole(admin)` guards admin routes
-3. **Domain policy** — pure functions enforce ownership (user can only touch own resources)
-
-### Anti-replay
-
-Every mutating request must include:
-- `X-Request-Timestamp` — Unix epoch; rejected if outside ±`SECURITY_ANTI_REPLAY_WINDOW_SEC` seconds
-- `X-Nonce` — unique string per request; cached server-side; duplicates rejected with 401
-
-### Rate limiting
-
-- **Global IP limit** — applied before JWT validation (default: 120 req/min)
-- **Per-user limit** — applied after user identification (default: 60 req/min)
-- **Chat-specific limit** — tighter budget on the AI endpoint (default: 20 req/min)
 
 ---
 

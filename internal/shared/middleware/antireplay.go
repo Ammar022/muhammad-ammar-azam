@@ -6,8 +6,8 @@ import (
 	"sync"
 	"time"
 
-	apperrors "github.com/Ammar022/secure-ai-chat-backend/internal/shared/errors"
-	"github.com/Ammar022/secure-ai-chat-backend/internal/shared/response"
+	apperrors "github.com/Ammar022/muhammad-ammar-azam/internal/shared/errors"
+	"github.com/Ammar022/muhammad-ammar-azam/internal/shared/response"
 )
 
 type nonceEntry struct {

@@ -52,7 +52,7 @@ const docTemplate = `{
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.Envelope"
+                                    "$ref": "#/definitions/github_com_Ammar022_muhammad-ammar-azam_internal_shared_response.Envelope"
                                 },
                                 {
                                     "type": "object",
@@ -68,13 +68,13 @@ const docTemplate = `{
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.Envelope"
+                            "$ref": "#/definitions/github_com_Ammar022_muhammad-ammar-azam_internal_shared_response.Envelope"
                         }
                     },
                     "403": {
                         "description": "Forbidden — admin role required",
                         "schema": {
-                            "$ref": "#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.Envelope"
+                            "$ref": "#/definitions/github_com_Ammar022_muhammad-ammar-azam_internal_shared_response.Envelope"
                         }
                     }
                 }
@@ -115,19 +115,19 @@ const docTemplate = `{
                     "200": {
                         "description": "List of users",
                         "schema": {
-                            "$ref": "#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.Envelope"
+                            "$ref": "#/definitions/github_com_Ammar022_muhammad-ammar-azam_internal_shared_response.Envelope"
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.Envelope"
+                            "$ref": "#/definitions/github_com_Ammar022_muhammad-ammar-azam_internal_shared_response.Envelope"
                         }
                     },
                     "403": {
                         "description": "Forbidden — admin role required",
                         "schema": {
-                            "$ref": "#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.Envelope"
+                            "$ref": "#/definitions/github_com_Ammar022_muhammad-ammar-azam_internal_shared_response.Envelope"
                         }
                     }
                 }
@@ -187,31 +187,31 @@ const docTemplate = `{
                     "200": {
                         "description": "Updated user",
                         "schema": {
-                            "$ref": "#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.Envelope"
+                            "$ref": "#/definitions/github_com_Ammar022_muhammad-ammar-azam_internal_shared_response.Envelope"
                         }
                     },
                     "400": {
                         "description": "Invalid role or user ID",
                         "schema": {
-                            "$ref": "#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.Envelope"
+                            "$ref": "#/definitions/github_com_Ammar022_muhammad-ammar-azam_internal_shared_response.Envelope"
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.Envelope"
+                            "$ref": "#/definitions/github_com_Ammar022_muhammad-ammar-azam_internal_shared_response.Envelope"
                         }
                     },
                     "403": {
                         "description": "Forbidden — admin role required",
                         "schema": {
-                            "$ref": "#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.Envelope"
+                            "$ref": "#/definitions/github_com_Ammar022_muhammad-ammar-azam_internal_shared_response.Envelope"
                         }
                     },
                     "404": {
                         "description": "User not found",
                         "schema": {
-                            "$ref": "#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.Envelope"
+                            "$ref": "#/definitions/github_com_Ammar022_muhammad-ammar-azam_internal_shared_response.Envelope"
                         }
                     }
                 }
@@ -261,7 +261,7 @@ const docTemplate = `{
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.Envelope"
+                                    "$ref": "#/definitions/github_com_Ammar022_muhammad-ammar-azam_internal_shared_response.Envelope"
                                 },
                                 {
                                     "type": "object",
@@ -277,19 +277,19 @@ const docTemplate = `{
                     "400": {
                         "description": "Invalid user ID",
                         "schema": {
-                            "$ref": "#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.Envelope"
+                            "$ref": "#/definitions/github_com_Ammar022_muhammad-ammar-azam_internal_shared_response.Envelope"
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.Envelope"
+                            "$ref": "#/definitions/github_com_Ammar022_muhammad-ammar-azam_internal_shared_response.Envelope"
                         }
                     },
                     "403": {
                         "description": "Forbidden — admin role required",
                         "schema": {
-                            "$ref": "#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.Envelope"
+                            "$ref": "#/definitions/github_com_Ammar022_muhammad-ammar-azam_internal_shared_response.Envelope"
                         }
                     }
                 }
@@ -344,7 +344,7 @@ const docTemplate = `{
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.Envelope"
+                                    "$ref": "#/definitions/github_com_Ammar022_muhammad-ammar-azam_internal_shared_response.Envelope"
                                 },
                                 {
                                     "type": "object",
@@ -363,7 +363,7 @@ const docTemplate = `{
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.Envelope"
+                            "$ref": "#/definitions/github_com_Ammar022_muhammad-ammar-azam_internal_shared_response.Envelope"
                         }
                     }
                 }
@@ -406,7 +406,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_chat_dto.SendMessageRequest"
+                            "$ref": "#/definitions/github_com_Ammar022_muhammad-ammar-azam_internal_chat_dto.SendMessageRequest"
                         }
                     }
                 ],
@@ -416,7 +416,7 @@ const docTemplate = `{
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.Envelope"
+                                    "$ref": "#/definitions/github_com_Ammar022_muhammad-ammar-azam_internal_shared_response.Envelope"
                                 },
                                 {
                                     "type": "object",
@@ -432,31 +432,31 @@ const docTemplate = `{
                     "400": {
                         "description": "Invalid input",
                         "schema": {
-                            "$ref": "#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.Envelope"
+                            "$ref": "#/definitions/github_com_Ammar022_muhammad-ammar-azam_internal_shared_response.Envelope"
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.Envelope"
+                            "$ref": "#/definitions/github_com_Ammar022_muhammad-ammar-azam_internal_shared_response.Envelope"
                         }
                     },
                     "402": {
                         "description": "No quota available — subscribe to continue",
                         "schema": {
-                            "$ref": "#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.Envelope"
+                            "$ref": "#/definitions/github_com_Ammar022_muhammad-ammar-azam_internal_shared_response.Envelope"
                         }
                     },
                     "422": {
                         "description": "Validation error",
                         "schema": {
-                            "$ref": "#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.Envelope"
+                            "$ref": "#/definitions/github_com_Ammar022_muhammad-ammar-azam_internal_shared_response.Envelope"
                         }
                     },
                     "429": {
                         "description": "Rate limited",
                         "schema": {
-                            "$ref": "#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.Envelope"
+                            "$ref": "#/definitions/github_com_Ammar022_muhammad-ammar-azam_internal_shared_response.Envelope"
                         }
                     }
                 }
@@ -506,7 +506,7 @@ const docTemplate = `{
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.Envelope"
+                                    "$ref": "#/definitions/github_com_Ammar022_muhammad-ammar-azam_internal_shared_response.Envelope"
                                 },
                                 {
                                     "type": "object",
@@ -522,25 +522,25 @@ const docTemplate = `{
                     "400": {
                         "description": "Invalid UUID",
                         "schema": {
-                            "$ref": "#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.Envelope"
+                            "$ref": "#/definitions/github_com_Ammar022_muhammad-ammar-azam_internal_shared_response.Envelope"
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.Envelope"
+                            "$ref": "#/definitions/github_com_Ammar022_muhammad-ammar-azam_internal_shared_response.Envelope"
                         }
                     },
                     "403": {
                         "description": "Forbidden",
                         "schema": {
-                            "$ref": "#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.Envelope"
+                            "$ref": "#/definitions/github_com_Ammar022_muhammad-ammar-azam_internal_shared_response.Envelope"
                         }
                     },
                     "404": {
                         "description": "Not found",
                         "schema": {
-                            "$ref": "#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.Envelope"
+                            "$ref": "#/definitions/github_com_Ammar022_muhammad-ammar-azam_internal_shared_response.Envelope"
                         }
                     }
                 }
@@ -583,7 +583,7 @@ const docTemplate = `{
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.Envelope"
+                                    "$ref": "#/definitions/github_com_Ammar022_muhammad-ammar-azam_internal_shared_response.Envelope"
                                 },
                                 {
                                     "type": "object",
@@ -602,7 +602,7 @@ const docTemplate = `{
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.Envelope"
+                            "$ref": "#/definitions/github_com_Ammar022_muhammad-ammar-azam_internal_shared_response.Envelope"
                         }
                     }
                 }
@@ -645,7 +645,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_subscription_dto.CreateSubscriptionRequest"
+                            "$ref": "#/definitions/github_com_Ammar022_muhammad-ammar-azam_internal_subscription_dto.CreateSubscriptionRequest"
                         }
                     }
                 ],
@@ -655,7 +655,7 @@ const docTemplate = `{
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.Envelope"
+                                    "$ref": "#/definitions/github_com_Ammar022_muhammad-ammar-azam_internal_shared_response.Envelope"
                                 },
                                 {
                                     "type": "object",
@@ -671,19 +671,19 @@ const docTemplate = `{
                     "400": {
                         "description": "Invalid input",
                         "schema": {
-                            "$ref": "#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.Envelope"
+                            "$ref": "#/definitions/github_com_Ammar022_muhammad-ammar-azam_internal_shared_response.Envelope"
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.Envelope"
+                            "$ref": "#/definitions/github_com_Ammar022_muhammad-ammar-azam_internal_shared_response.Envelope"
                         }
                     },
                     "422": {
                         "description": "Validation error — see details for field messages",
                         "schema": {
-                            "$ref": "#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.Envelope"
+                            "$ref": "#/definitions/github_com_Ammar022_muhammad-ammar-azam_internal_shared_response.Envelope"
                         }
                     }
                 }
@@ -733,7 +733,7 @@ const docTemplate = `{
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.Envelope"
+                                    "$ref": "#/definitions/github_com_Ammar022_muhammad-ammar-azam_internal_shared_response.Envelope"
                                 },
                                 {
                                     "type": "object",
@@ -749,25 +749,25 @@ const docTemplate = `{
                     "400": {
                         "description": "Invalid UUID",
                         "schema": {
-                            "$ref": "#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.Envelope"
+                            "$ref": "#/definitions/github_com_Ammar022_muhammad-ammar-azam_internal_shared_response.Envelope"
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.Envelope"
+                            "$ref": "#/definitions/github_com_Ammar022_muhammad-ammar-azam_internal_shared_response.Envelope"
                         }
                     },
                     "403": {
                         "description": "Forbidden",
                         "schema": {
-                            "$ref": "#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.Envelope"
+                            "$ref": "#/definitions/github_com_Ammar022_muhammad-ammar-azam_internal_shared_response.Envelope"
                         }
                     },
                     "404": {
                         "description": "Not found",
                         "schema": {
-                            "$ref": "#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.Envelope"
+                            "$ref": "#/definitions/github_com_Ammar022_muhammad-ammar-azam_internal_shared_response.Envelope"
                         }
                     }
                 }
@@ -819,7 +819,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_subscription_dto.ToggleAutoRenewRequest"
+                            "$ref": "#/definitions/github_com_Ammar022_muhammad-ammar-azam_internal_subscription_dto.ToggleAutoRenewRequest"
                         }
                     }
                 ],
@@ -829,7 +829,7 @@ const docTemplate = `{
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.Envelope"
+                                    "$ref": "#/definitions/github_com_Ammar022_muhammad-ammar-azam_internal_shared_response.Envelope"
                                 },
                                 {
                                     "type": "object",
@@ -845,19 +845,19 @@ const docTemplate = `{
                     "400": {
                         "description": "Invalid input or subscription is cancelled",
                         "schema": {
-                            "$ref": "#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.Envelope"
+                            "$ref": "#/definitions/github_com_Ammar022_muhammad-ammar-azam_internal_shared_response.Envelope"
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.Envelope"
+                            "$ref": "#/definitions/github_com_Ammar022_muhammad-ammar-azam_internal_shared_response.Envelope"
                         }
                     },
                     "403": {
                         "description": "Forbidden",
                         "schema": {
-                            "$ref": "#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.Envelope"
+                            "$ref": "#/definitions/github_com_Ammar022_muhammad-ammar-azam_internal_shared_response.Envelope"
                         }
                     }
                 }
@@ -907,7 +907,7 @@ const docTemplate = `{
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.Envelope"
+                                    "$ref": "#/definitions/github_com_Ammar022_muhammad-ammar-azam_internal_shared_response.Envelope"
                                 },
                                 {
                                     "type": "object",
@@ -923,25 +923,25 @@ const docTemplate = `{
                     "400": {
                         "description": "Already cancelled or invalid ID",
                         "schema": {
-                            "$ref": "#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.Envelope"
+                            "$ref": "#/definitions/github_com_Ammar022_muhammad-ammar-azam_internal_shared_response.Envelope"
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.Envelope"
+                            "$ref": "#/definitions/github_com_Ammar022_muhammad-ammar-azam_internal_shared_response.Envelope"
                         }
                     },
                     "403": {
                         "description": "Forbidden",
                         "schema": {
-                            "$ref": "#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.Envelope"
+                            "$ref": "#/definitions/github_com_Ammar022_muhammad-ammar-azam_internal_shared_response.Envelope"
                         }
                     },
                     "404": {
                         "description": "Not found",
                         "schema": {
-                            "$ref": "#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.Envelope"
+                            "$ref": "#/definitions/github_com_Ammar022_muhammad-ammar-azam_internal_shared_response.Envelope"
                         }
                     }
                 }
@@ -977,7 +977,7 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "github_com_Ammar022_secure-ai-chat-backend_internal_chat_dto.SendMessageRequest": {
+        "github_com_Ammar022_muhammad-ammar-azam_internal_chat_dto.SendMessageRequest": {
             "type": "object",
             "required": [
                 "question"
@@ -992,12 +992,12 @@ const docTemplate = `{
                 }
             }
         },
-        "github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.Envelope": {
+        "github_com_Ammar022_muhammad-ammar-azam_internal_shared_response.Envelope": {
             "type": "object",
             "properties": {
                 "data": {},
                 "error": {
-                    "$ref": "#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.ErrorBody"
+                    "$ref": "#/definitions/github_com_Ammar022_muhammad-ammar-azam_internal_shared_response.ErrorBody"
                 },
                 "meta": {},
                 "success": {
@@ -1005,7 +1005,7 @@ const docTemplate = `{
                 }
             }
         },
-        "github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.ErrorBody": {
+        "github_com_Ammar022_muhammad-ammar-azam_internal_shared_response.ErrorBody": {
             "type": "object",
             "properties": {
                 "code": {
@@ -1019,7 +1019,7 @@ const docTemplate = `{
                 }
             }
         },
-        "github_com_Ammar022_secure-ai-chat-backend_internal_subscription_dto.CreateSubscriptionRequest": {
+        "github_com_Ammar022_muhammad-ammar-azam_internal_subscription_dto.CreateSubscriptionRequest": {
             "type": "object",
             "required": [
                 "billing_cycle",
@@ -1052,7 +1052,7 @@ const docTemplate = `{
                 }
             }
         },
-        "github_com_Ammar022_secure-ai-chat-backend_internal_subscription_dto.ToggleAutoRenewRequest": {
+        "github_com_Ammar022_muhammad-ammar-azam_internal_subscription_dto.ToggleAutoRenewRequest": {
             "type": "object",
             "properties": {
                 "enable": {

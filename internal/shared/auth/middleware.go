@@ -11,9 +11,9 @@ import (
 	"github.com/lestrrat-go/jwx/v2/jwt"
 	"github.com/rs/zerolog/log"
 
-	"github.com/Ammar022/secure-ai-chat-backend/internal/shared/config"
-	apperrors "github.com/Ammar022/secure-ai-chat-backend/internal/shared/errors"
-	"github.com/Ammar022/secure-ai-chat-backend/internal/shared/response"
+	"github.com/Ammar022/muhammad-ammar-azam/internal/shared/config"
+	apperrors "github.com/Ammar022/muhammad-ammar-azam/internal/shared/errors"
+	"github.com/Ammar022/muhammad-ammar-azam/internal/shared/response"
 )
 
 type Validator struct {

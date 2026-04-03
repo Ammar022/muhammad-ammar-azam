@@ -17,8 +17,8 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/Ammar022/secure-ai-chat-backend/internal/shared/auth"
-	"github.com/Ammar022/secure-ai-chat-backend/internal/shared/config"
+	"github.com/Ammar022/muhammad-ammar-azam/internal/shared/auth"
+	"github.com/Ammar022/muhammad-ammar-azam/internal/shared/config"
 )
 
 // ── Mocked Auth0 provider tests ───────────────────────────────────────────────

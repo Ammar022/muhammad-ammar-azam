@@ -7,7 +7,7 @@ import (
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 
-	"github.com/Ammar022/secure-ai-chat-backend/internal/shared/auth"
+	"github.com/Ammar022/muhammad-ammar-azam/internal/shared/auth"
 )
 
 type responseRecorder struct {

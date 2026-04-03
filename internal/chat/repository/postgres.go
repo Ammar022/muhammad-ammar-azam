@@ -9,7 +9,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/jmoiron/sqlx"
 
-	chatdomain "github.com/Ammar022/secure-ai-chat-backend/internal/chat/domain"
+	chatdomain "github.com/Ammar022/muhammad-ammar-azam/internal/chat/domain"
 )
 
 type postgresChatRepository struct {

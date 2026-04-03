@@ -11,12 +11,12 @@ import (
 	"github.com/google/uuid"
 	"github.com/microcosm-cc/bluemonday"
 
-	"github.com/Ammar022/secure-ai-chat-backend/internal/chat/domain"
-	"github.com/Ammar022/secure-ai-chat-backend/internal/chat/dto"
-	"github.com/Ammar022/secure-ai-chat-backend/internal/shared/auth"
-	apperrors "github.com/Ammar022/secure-ai-chat-backend/internal/shared/errors"
-	"github.com/Ammar022/secure-ai-chat-backend/internal/shared/middleware"
-	"github.com/Ammar022/secure-ai-chat-backend/internal/shared/response"
+	"github.com/Ammar022/muhammad-ammar-azam/internal/chat/domain"
+	"github.com/Ammar022/muhammad-ammar-azam/internal/chat/dto"
+	"github.com/Ammar022/muhammad-ammar-azam/internal/shared/auth"
+	apperrors "github.com/Ammar022/muhammad-ammar-azam/internal/shared/errors"
+	"github.com/Ammar022/muhammad-ammar-azam/internal/shared/middleware"
+	"github.com/Ammar022/muhammad-ammar-azam/internal/shared/response"
 )
 
 // ChatController handles all HTTP requests for the /api/v1/chat route group.

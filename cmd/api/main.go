@@ -24,25 +24,25 @@ import (
 	"github.com/rs/zerolog/log"
 	httpSwagger "github.com/swaggo/http-swagger/v2"
 
-	_ "github.com/Ammar022/secure-ai-chat-backend/docs"
+	_ "github.com/Ammar022/muhammad-ammar-azam/docs"
 
-	adminctrl "github.com/Ammar022/secure-ai-chat-backend/internal/admin/controller"
-	authctrl "github.com/Ammar022/secure-ai-chat-backend/internal/auth/controller"
-	"github.com/Ammar022/secure-ai-chat-backend/internal/shared/auth"
-	"github.com/Ammar022/secure-ai-chat-backend/internal/shared/config"
-	"github.com/Ammar022/secure-ai-chat-backend/internal/shared/database"
-	applogger "github.com/Ammar022/secure-ai-chat-backend/internal/shared/logger"
-	"github.com/Ammar022/secure-ai-chat-backend/internal/shared/middleware"
+	adminctrl "github.com/Ammar022/muhammad-ammar-azam/internal/admin/controller"
+	authctrl "github.com/Ammar022/muhammad-ammar-azam/internal/auth/controller"
+	"github.com/Ammar022/muhammad-ammar-azam/internal/shared/auth"
+	"github.com/Ammar022/muhammad-ammar-azam/internal/shared/config"
+	"github.com/Ammar022/muhammad-ammar-azam/internal/shared/database"
+	applogger "github.com/Ammar022/muhammad-ammar-azam/internal/shared/logger"
+	"github.com/Ammar022/muhammad-ammar-azam/internal/shared/middleware"
 
-	chatctrl "github.com/Ammar022/secure-ai-chat-backend/internal/chat/controller"
-	chatdomain "github.com/Ammar022/secure-ai-chat-backend/internal/chat/domain"
-	chatrepo "github.com/Ammar022/secure-ai-chat-backend/internal/chat/repository"
+	chatctrl "github.com/Ammar022/muhammad-ammar-azam/internal/chat/controller"
+	chatdomain "github.com/Ammar022/muhammad-ammar-azam/internal/chat/domain"
+	chatrepo "github.com/Ammar022/muhammad-ammar-azam/internal/chat/repository"
 
-	subctrl "github.com/Ammar022/secure-ai-chat-backend/internal/subscription/controller"
-	subdomain "github.com/Ammar022/secure-ai-chat-backend/internal/subscription/domain"
-	subrepo "github.com/Ammar022/secure-ai-chat-backend/internal/subscription/repository"
+	subctrl "github.com/Ammar022/muhammad-ammar-azam/internal/subscription/controller"
+	subdomain "github.com/Ammar022/muhammad-ammar-azam/internal/subscription/domain"
+	subrepo "github.com/Ammar022/muhammad-ammar-azam/internal/subscription/repository"
 
-	userrepo "github.com/Ammar022/secure-ai-chat-backend/internal/user/repository"
+	userrepo "github.com/Ammar022/muhammad-ammar-azam/internal/user/repository"
 )
 
 func main() {

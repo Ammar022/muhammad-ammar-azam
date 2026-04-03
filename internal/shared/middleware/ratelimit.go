@@ -8,9 +8,9 @@ import (
 
 	"golang.org/x/time/rate"
 
-	"github.com/Ammar022/secure-ai-chat-backend/internal/shared/auth"
-	apperrors "github.com/Ammar022/secure-ai-chat-backend/internal/shared/errors"
-	"github.com/Ammar022/secure-ai-chat-backend/internal/shared/response"
+	"github.com/Ammar022/muhammad-ammar-azam/internal/shared/auth"
+	apperrors "github.com/Ammar022/muhammad-ammar-azam/internal/shared/errors"
+	"github.com/Ammar022/muhammad-ammar-azam/internal/shared/response"
 )
 
 type visitor struct {

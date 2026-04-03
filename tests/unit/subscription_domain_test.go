@@ -8,7 +8,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	subdomain "github.com/Ammar022/secure-ai-chat-backend/internal/subscription/domain"
+	subdomain "github.com/Ammar022/muhammad-ammar-azam/internal/subscription/domain"
 )
 
 func TestTier_MaxMessages(t *testing.T) {

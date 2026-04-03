@@ -1,6 +1,6 @@
 basePath: /
 definitions:
-  github_com_Ammar022_secure-ai-chat-backend_internal_chat_dto.SendMessageRequest:
+  github_com_Ammar022_muhammad-ammar-azam_internal_chat_dto.SendMessageRequest:
     properties:
       question:
         description: |-
@@ -13,16 +13,16 @@ definitions:
     required:
     - question
     type: object
-  github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.Envelope:
+  github_com_Ammar022_muhammad-ammar-azam_internal_shared_response.Envelope:
     properties:
       data: {}
       error:
-        $ref: '#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.ErrorBody'
+        $ref: '#/definitions/github_com_Ammar022_muhammad-ammar-azam_internal_shared_response.ErrorBody'
       meta: {}
       success:
         type: boolean
     type: object
-  github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.ErrorBody:
+  github_com_Ammar022_muhammad-ammar-azam_internal_shared_response.ErrorBody:
     properties:
       code:
         type: string
@@ -31,7 +31,7 @@ definitions:
       message:
         type: string
     type: object
-  github_com_Ammar022_secure-ai-chat-backend_internal_subscription_dto.CreateSubscriptionRequest:
+  github_com_Ammar022_muhammad-ammar-azam_internal_subscription_dto.CreateSubscriptionRequest:
     properties:
       auto_renew:
         description: AutoRenew controls whether the subscription automatically renews
@@ -61,7 +61,7 @@ definitions:
     - billing_cycle
     - tier
     type: object
-  github_com_Ammar022_secure-ai-chat-backend_internal_subscription_dto.ToggleAutoRenewRequest:
+  github_com_Ammar022_muhammad-ammar-azam_internal_subscription_dto.ToggleAutoRenewRequest:
     properties:
       enable:
         description: Enable sets auto_renew to true or false.
@@ -237,7 +237,7 @@ paths:
           description: System metrics
           schema:
             allOf:
-            - $ref: '#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.Envelope'
+            - $ref: '#/definitions/github_com_Ammar022_muhammad-ammar-azam_internal_shared_response.Envelope'
             - properties:
                 data:
                   $ref: '#/definitions/internal_admin_controller.metricsResponse'
@@ -245,11 +245,11 @@ paths:
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.Envelope'
+            $ref: '#/definitions/github_com_Ammar022_muhammad-ammar-azam_internal_shared_response.Envelope'
         "403":
           description: Forbidden — admin role required
           schema:
-            $ref: '#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.Envelope'
+            $ref: '#/definitions/github_com_Ammar022_muhammad-ammar-azam_internal_shared_response.Envelope'
       security:
       - BearerAuth: []
       summary: Get system metrics
@@ -276,15 +276,15 @@ paths:
         "200":
           description: List of users
           schema:
-            $ref: '#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.Envelope'
+            $ref: '#/definitions/github_com_Ammar022_muhammad-ammar-azam_internal_shared_response.Envelope'
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.Envelope'
+            $ref: '#/definitions/github_com_Ammar022_muhammad-ammar-azam_internal_shared_response.Envelope'
         "403":
           description: Forbidden — admin role required
           schema:
-            $ref: '#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.Envelope'
+            $ref: '#/definitions/github_com_Ammar022_muhammad-ammar-azam_internal_shared_response.Envelope'
       security:
       - BearerAuth: []
       summary: List all users
@@ -324,23 +324,23 @@ paths:
         "200":
           description: Updated user
           schema:
-            $ref: '#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.Envelope'
+            $ref: '#/definitions/github_com_Ammar022_muhammad-ammar-azam_internal_shared_response.Envelope'
         "400":
           description: Invalid role or user ID
           schema:
-            $ref: '#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.Envelope'
+            $ref: '#/definitions/github_com_Ammar022_muhammad-ammar-azam_internal_shared_response.Envelope'
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.Envelope'
+            $ref: '#/definitions/github_com_Ammar022_muhammad-ammar-azam_internal_shared_response.Envelope'
         "403":
           description: Forbidden — admin role required
           schema:
-            $ref: '#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.Envelope'
+            $ref: '#/definitions/github_com_Ammar022_muhammad-ammar-azam_internal_shared_response.Envelope'
         "404":
           description: User not found
           schema:
-            $ref: '#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.Envelope'
+            $ref: '#/definitions/github_com_Ammar022_muhammad-ammar-azam_internal_shared_response.Envelope'
       security:
       - BearerAuth: []
       summary: Set user role
@@ -373,7 +373,7 @@ paths:
           description: User usage details
           schema:
             allOf:
-            - $ref: '#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.Envelope'
+            - $ref: '#/definitions/github_com_Ammar022_muhammad-ammar-azam_internal_shared_response.Envelope'
             - properties:
                 data:
                   $ref: '#/definitions/internal_admin_controller.userUsageResponse'
@@ -381,15 +381,15 @@ paths:
         "400":
           description: Invalid user ID
           schema:
-            $ref: '#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.Envelope'
+            $ref: '#/definitions/github_com_Ammar022_muhammad-ammar-azam_internal_shared_response.Envelope'
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.Envelope'
+            $ref: '#/definitions/github_com_Ammar022_muhammad-ammar-azam_internal_shared_response.Envelope'
         "403":
           description: Forbidden — admin role required
           schema:
-            $ref: '#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.Envelope'
+            $ref: '#/definitions/github_com_Ammar022_muhammad-ammar-azam_internal_shared_response.Envelope'
       security:
       - BearerAuth: []
       summary: Get user usage
@@ -425,7 +425,7 @@ paths:
           description: Paginated messages
           schema:
             allOf:
-            - $ref: '#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.Envelope'
+            - $ref: '#/definitions/github_com_Ammar022_muhammad-ammar-azam_internal_shared_response.Envelope'
             - properties:
                 data:
                   items:
@@ -435,7 +435,7 @@ paths:
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.Envelope'
+            $ref: '#/definitions/github_com_Ammar022_muhammad-ammar-azam_internal_shared_response.Envelope'
       security:
       - BearerAuth: []
       summary: List chat messages
@@ -465,7 +465,7 @@ paths:
         name: body
         required: true
         schema:
-          $ref: '#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_chat_dto.SendMessageRequest'
+          $ref: '#/definitions/github_com_Ammar022_muhammad-ammar-azam_internal_chat_dto.SendMessageRequest'
       produces:
       - application/json
       responses:
@@ -473,7 +473,7 @@ paths:
           description: Message stored and AI response returned
           schema:
             allOf:
-            - $ref: '#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.Envelope'
+            - $ref: '#/definitions/github_com_Ammar022_muhammad-ammar-azam_internal_shared_response.Envelope'
             - properties:
                 data:
                   $ref: '#/definitions/internal_chat_controller.messageResponse'
@@ -481,23 +481,23 @@ paths:
         "400":
           description: Invalid input
           schema:
-            $ref: '#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.Envelope'
+            $ref: '#/definitions/github_com_Ammar022_muhammad-ammar-azam_internal_shared_response.Envelope'
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.Envelope'
+            $ref: '#/definitions/github_com_Ammar022_muhammad-ammar-azam_internal_shared_response.Envelope'
         "402":
           description: No quota available — subscribe to continue
           schema:
-            $ref: '#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.Envelope'
+            $ref: '#/definitions/github_com_Ammar022_muhammad-ammar-azam_internal_shared_response.Envelope'
         "422":
           description: Validation error
           schema:
-            $ref: '#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.Envelope'
+            $ref: '#/definitions/github_com_Ammar022_muhammad-ammar-azam_internal_shared_response.Envelope'
         "429":
           description: Rate limited
           schema:
-            $ref: '#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.Envelope'
+            $ref: '#/definitions/github_com_Ammar022_muhammad-ammar-azam_internal_shared_response.Envelope'
       security:
       - BearerAuth: []
       summary: Send a message to the AI
@@ -530,7 +530,7 @@ paths:
           description: Chat message
           schema:
             allOf:
-            - $ref: '#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.Envelope'
+            - $ref: '#/definitions/github_com_Ammar022_muhammad-ammar-azam_internal_shared_response.Envelope'
             - properties:
                 data:
                   $ref: '#/definitions/internal_chat_controller.messageResponse'
@@ -538,19 +538,19 @@ paths:
         "400":
           description: Invalid UUID
           schema:
-            $ref: '#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.Envelope'
+            $ref: '#/definitions/github_com_Ammar022_muhammad-ammar-azam_internal_shared_response.Envelope'
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.Envelope'
+            $ref: '#/definitions/github_com_Ammar022_muhammad-ammar-azam_internal_shared_response.Envelope'
         "403":
           description: Forbidden
           schema:
-            $ref: '#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.Envelope'
+            $ref: '#/definitions/github_com_Ammar022_muhammad-ammar-azam_internal_shared_response.Envelope'
         "404":
           description: Not found
           schema:
-            $ref: '#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.Envelope'
+            $ref: '#/definitions/github_com_Ammar022_muhammad-ammar-azam_internal_shared_response.Envelope'
       security:
       - BearerAuth: []
       summary: Get a single chat message
@@ -578,7 +578,7 @@ paths:
           description: List of subscriptions
           schema:
             allOf:
-            - $ref: '#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.Envelope'
+            - $ref: '#/definitions/github_com_Ammar022_muhammad-ammar-azam_internal_shared_response.Envelope'
             - properties:
                 data:
                   items:
@@ -588,7 +588,7 @@ paths:
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.Envelope'
+            $ref: '#/definitions/github_com_Ammar022_muhammad-ammar-azam_internal_shared_response.Envelope'
       security:
       - BearerAuth: []
       summary: List subscriptions
@@ -616,7 +616,7 @@ paths:
         name: body
         required: true
         schema:
-          $ref: '#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_subscription_dto.CreateSubscriptionRequest'
+          $ref: '#/definitions/github_com_Ammar022_muhammad-ammar-azam_internal_subscription_dto.CreateSubscriptionRequest'
       produces:
       - application/json
       responses:
@@ -624,7 +624,7 @@ paths:
           description: Subscription created
           schema:
             allOf:
-            - $ref: '#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.Envelope'
+            - $ref: '#/definitions/github_com_Ammar022_muhammad-ammar-azam_internal_shared_response.Envelope'
             - properties:
                 data:
                   $ref: '#/definitions/internal_subscription_controller.subscriptionResponse'
@@ -632,15 +632,15 @@ paths:
         "400":
           description: Invalid input
           schema:
-            $ref: '#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.Envelope'
+            $ref: '#/definitions/github_com_Ammar022_muhammad-ammar-azam_internal_shared_response.Envelope'
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.Envelope'
+            $ref: '#/definitions/github_com_Ammar022_muhammad-ammar-azam_internal_shared_response.Envelope'
         "422":
           description: Validation error — see details for field messages
           schema:
-            $ref: '#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.Envelope'
+            $ref: '#/definitions/github_com_Ammar022_muhammad-ammar-azam_internal_shared_response.Envelope'
       security:
       - BearerAuth: []
       summary: Create a subscription bundle
@@ -673,7 +673,7 @@ paths:
           description: Subscription
           schema:
             allOf:
-            - $ref: '#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.Envelope'
+            - $ref: '#/definitions/github_com_Ammar022_muhammad-ammar-azam_internal_shared_response.Envelope'
             - properties:
                 data:
                   $ref: '#/definitions/internal_subscription_controller.subscriptionResponse'
@@ -681,19 +681,19 @@ paths:
         "400":
           description: Invalid UUID
           schema:
-            $ref: '#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.Envelope'
+            $ref: '#/definitions/github_com_Ammar022_muhammad-ammar-azam_internal_shared_response.Envelope'
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.Envelope'
+            $ref: '#/definitions/github_com_Ammar022_muhammad-ammar-azam_internal_shared_response.Envelope'
         "403":
           description: Forbidden
           schema:
-            $ref: '#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.Envelope'
+            $ref: '#/definitions/github_com_Ammar022_muhammad-ammar-azam_internal_shared_response.Envelope'
         "404":
           description: Not found
           schema:
-            $ref: '#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.Envelope'
+            $ref: '#/definitions/github_com_Ammar022_muhammad-ammar-azam_internal_shared_response.Envelope'
       security:
       - BearerAuth: []
       summary: Get a subscription
@@ -726,7 +726,7 @@ paths:
         name: body
         required: true
         schema:
-          $ref: '#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_subscription_dto.ToggleAutoRenewRequest'
+          $ref: '#/definitions/github_com_Ammar022_muhammad-ammar-azam_internal_subscription_dto.ToggleAutoRenewRequest'
       produces:
       - application/json
       responses:
@@ -734,7 +734,7 @@ paths:
           description: Updated subscription
           schema:
             allOf:
-            - $ref: '#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.Envelope'
+            - $ref: '#/definitions/github_com_Ammar022_muhammad-ammar-azam_internal_shared_response.Envelope'
             - properties:
                 data:
                   $ref: '#/definitions/internal_subscription_controller.subscriptionResponse'
@@ -742,15 +742,15 @@ paths:
         "400":
           description: Invalid input or subscription is cancelled
           schema:
-            $ref: '#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.Envelope'
+            $ref: '#/definitions/github_com_Ammar022_muhammad-ammar-azam_internal_shared_response.Envelope'
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.Envelope'
+            $ref: '#/definitions/github_com_Ammar022_muhammad-ammar-azam_internal_shared_response.Envelope'
         "403":
           description: Forbidden
           schema:
-            $ref: '#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.Envelope'
+            $ref: '#/definitions/github_com_Ammar022_muhammad-ammar-azam_internal_shared_response.Envelope'
       security:
       - BearerAuth: []
       summary: Toggle auto-renew
@@ -784,7 +784,7 @@ paths:
           description: Cancelled subscription
           schema:
             allOf:
-            - $ref: '#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.Envelope'
+            - $ref: '#/definitions/github_com_Ammar022_muhammad-ammar-azam_internal_shared_response.Envelope'
             - properties:
                 data:
                   $ref: '#/definitions/internal_subscription_controller.subscriptionResponse'
@@ -792,19 +792,19 @@ paths:
         "400":
           description: Already cancelled or invalid ID
           schema:
-            $ref: '#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.Envelope'
+            $ref: '#/definitions/github_com_Ammar022_muhammad-ammar-azam_internal_shared_response.Envelope'
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.Envelope'
+            $ref: '#/definitions/github_com_Ammar022_muhammad-ammar-azam_internal_shared_response.Envelope'
         "403":
           description: Forbidden
           schema:
-            $ref: '#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.Envelope'
+            $ref: '#/definitions/github_com_Ammar022_muhammad-ammar-azam_internal_shared_response.Envelope'
         "404":
           description: Not found
           schema:
-            $ref: '#/definitions/github_com_Ammar022_secure-ai-chat-backend_internal_shared_response.Envelope'
+            $ref: '#/definitions/github_com_Ammar022_muhammad-ammar-azam_internal_shared_response.Envelope'
       security:
       - BearerAuth: []
       summary: Cancel a subscription

@@ -3,7 +3,7 @@ package domain
 import (
 	"github.com/google/uuid"
 
-	apperrors "github.com/Ammar022/secure-ai-chat-backend/internal/shared/errors"
+	apperrors "github.com/Ammar022/muhammad-ammar-azam/internal/shared/errors"
 )
 
 // SubscriptionPolicy enforces domain-level access rules for subscriptions.
